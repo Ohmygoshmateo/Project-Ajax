@@ -1,0 +1,122 @@
+# Ajax default configuration.
+#
+# Override any value by copying config/local_override.yaml.example to
+# config/local_override.yaml (gitignored) and setting only the keys you want to
+# change. Environment variables in .env supply credentials, never strategy
+# parameters.
+
+trading_mode: paper  # paper | live. The scheduled agent ignores this field entirely
+                     # and always uses the paper client — see src/ajax/live/gate.py.
+
+account:
+  # Starting equity assumed by the backtester. The paper trader reads real
+  # equity from Alpaca and uses this only as a fallback.
+  equity: 5000.0
+
+  # Fraction of equity risked per position. For a long option, max loss is the
+  # entire premium, so this IS the max loss per trade.
+  #
+  # NOTE: 0.15 is aggressive. With max_concurrent_positions: 2 this can put 30%
+  # of the account at risk simultaneously. It was chosen deliberately: at the
+  # more conservative 0.02-0.05, a $5k account can only afford contracts on
+  # underlyings below roughly $30, which excludes most of the S&P 500. Run
+  # `ajax feasibility` to see the real tradeoff against live chain data.
+  risk_pct_per_trade: 0.15
+
+  max_concurrent_positions: 2  # valid range 1-2
+  commission_per_contract: 0.65
+
+universe:
+  # Wikipedia is the refresh source, but a refresh is only accepted if it passes
+  # these sanity checks — otherwise the cached last-good list is kept.
+  min_expected_tickers: 450
+  max_expected_tickers: 520
+  max_churn_per_refresh: 10
+  benchmark: SPY
+
+signals:
+  # Component weights for the cross-sectional composite score. Each component is
+  # z-scored across the universe before weighting, so these are comparable.
+  weights:
+    relative_strength: 0.30
+    macd_histogram: 0.20
+    rsi_banded: 0.15
+    roc_10: 0.15
+    roc_20: 0.10
+    volume_zscore: 0.10
+
+  lookbacks:
+    relative_strength_days: 21
+    rsi_period: 14
+    macd_fast: 12
+    macd_slow: 26
+    macd_signal: 9
+    roc_short: 10
+    roc_long: 20
+    volume_window: 20
+    sma_fast: 20
+    sma_slow: 50
+
+  # RSI band: readings in this range score best for a bullish candidate.
+  # Above rsi_overbought the score is penalised (buying exhaustion).
+  rsi_sweet_low: 50.0
+  rsi_sweet_high: 70.0
+  rsi_overbought: 80.0
+
+  top_n: 5                    # top 5 strength + bottom 5 weakness
+  entry_score_threshold: 0.75 # |composite z| must clear this to be actionable
+  require_trend_gate: true
+
+options:
+  shortlist_size: 20   # stage-2 chain fetches are limited to this many tickers
+  max_shortlist: 50
+
+  dte_target_min: 30
+  dte_target_max: 45
+  dte_hard_floor: 21   # never select a contract below this, under any condition
+
+  delta_min: 0.55
+  delta_max: 0.70
+  # There is no authoritative "correct" swing delta — no broker publishes one.
+  # This band is convention: higher delta pays less extrinsic value, which suits
+  # a 5-day hold, but costs more per contract. It is a first-class tuner target.
+
+  min_open_interest: 100
+  min_volume: 0
+  max_relative_spread: 0.15   # (ask-bid)/mid
+
+  # Hard affordability cap, in premium per share. Contract cost = premium * 100.
+  # 7.50 => $750 per contract, consistent with risk_pct_per_trade 0.15 on $5k.
+  max_premium_per_contract: 7.50
+
+backtest:
+  months: 6
+  hold_trading_days: 5   # a requirement, not a tunable
+  risk_free_rate: 0.04
+
+  # Added to realized vol when pricing entries on the Black-Scholes path.
+  # Implied vol exceeds subsequently realized vol roughly 85% of the time by
+  # ~2-4 points, so pricing at bare realized vol underprices what you buy and
+  # makes a long-options strategy look better than it was.
+  vol_haircut_points: 3.5
+
+  realized_vol_window: 21
+  price_source: auto      # auto | bars | bs
+
+  # Modelled bid-ask spread as a fraction of mid, used when real NBBO is
+  # unavailable. Buys fill at ask, sells at bid.
+  spread_pct_of_mid:
+    default: 0.06
+    wide_dte: 0.09        # applied below dte_hard_floor + 7
+
+graduation:
+  min_win_rate: 0.80
+  consecutive_weeks: 2
+  min_closed_trades: 20   # without this floor, 1-2 concurrent positions yield
+                          # only ~2-4 trades per fortnight, where 80% is noise
+  mode: strict_both_weeks # strict_both_weeks | blended_14d
+
+paths:
+  data_cache: data_cache
+  reports: reports
+  logs: logs
