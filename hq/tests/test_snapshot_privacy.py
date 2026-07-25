@@ -161,3 +161,32 @@ class TestMerge:
 
         fresh = collect(claude_home=empty_home, workspace=empty_workspace)
         assert snapshot_mod.merge_history(fresh, history) == 0
+
+
+class TestMeasuredOutputSurvivesArchiving:
+    """Without this, agents restored on another machine show a false zero."""
+
+    def test_output_chars_is_persisted(self, claude_home, empty_workspace):
+        payload = snapshot_mod.to_payload(_built(claude_home, empty_workspace))
+        assert all("output_chars" in row for row in payload["agents"])
+
+    def test_output_chars_survives_a_round_trip(self, claude_home, empty_workspace,
+                                                empty_home, tmp_path):
+        history = tmp_path / "history"
+        original = _built(claude_home, empty_workspace)
+        expected = {a.agent_id: a.output_chars for a in original.agents}
+        assert any(v > 0 for v in expected.values())
+
+        snapshot_mod.write(original, history)
+        fresh = collect(claude_home=empty_home, workspace=empty_workspace)
+        snapshot_mod.merge_history(fresh, history)
+
+        for agent in fresh.agents:
+            assert agent.output_chars == expected[agent.agent_id]
+
+    def test_a_size_is_not_content(self, claude_home, empty_workspace):
+        """The count travels; the text it was counted from does not."""
+        import json
+
+        serialized = json.dumps(snapshot_mod.to_payload(_built(claude_home, empty_workspace)))
+        assert SECRET_REPORT not in serialized

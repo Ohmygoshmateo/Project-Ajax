@@ -94,6 +94,9 @@ def to_payload(snapshot: Snapshot) -> dict[str, Any]:
                 "input_tokens": a.input_tokens,
                 "output_tokens": a.output_tokens,
                 "cache_tokens": a.cache_tokens,
+                # A size, not content — restoring this keeps archived agents
+                # from displaying a false zero for effort.
+                "output_chars": a.output_chars,
                 "files_touched": list(a.files_touched),
             }
             for a in snapshot.agents
@@ -232,6 +235,7 @@ def merge_history(snapshot: Snapshot, directory: Path | None = None) -> int:
                     input_tokens=int(row.get("input_tokens") or 0),
                     output_tokens=int(row.get("output_tokens") or 0),
                     cache_tokens=int(row.get("cache_tokens") or 0),
+                    output_chars=int(row.get("output_chars") or 0),
                     files_touched=list(row.get("files_touched") or []),
                     provenance=Provenance.RESTORED,
                 )
