@@ -1,0 +1,361 @@
+"""Domain model for Ajax HQ.
+
+Everything here describes work that actually happened. There is no field for
+simulated state, and nothing is populated by default — an absent value means the
+underlying record did not contain it, and the UI says so rather than guessing.
+"""
+
+from __future__ import annotations
+
+from dataclasses import dataclass, field
+from datetime import datetime, timedelta
+from enum import Enum
+
+SCHEMA_VERSION = 1
+
+
+class Status(str, Enum):
+    """Derived from real timestamps and recorded failures — never assigned."""
+
+    NEVER_ACTIVE = "never_active"
+    ACTIVE = "active"
+    IDLE = "idle"
+    DEGRADED = "degraded"
+    RUNNING = "running"
+    COMPLETED = "completed"
+    UNKNOWN = "unknown"
+
+    @property
+    def label(self) -> str:
+        return self.value.replace("_", " ").upper()
+
+
+class Provenance(str, Enum):
+    """Whether a record was read from this container or restored from history."""
+
+    LIVE = "live"
+    RESTORED = "restored"
+
+
+def _fmt_duration(seconds: float | None) -> str:
+    if seconds is None:
+        return "—"
+    if seconds < 60:
+        return f"{seconds:.0f}s"
+    if seconds < 3600:
+        return f"{seconds / 60:.0f}m {seconds % 60:.0f}s"
+    return f"{seconds / 3600:.1f}h"
+
+
+@dataclass
+class ToolUsage:
+    """Tool call counts, the closest thing to a measure of effort."""
+
+    counts: dict[str, int] = field(default_factory=dict)
+
+    def add(self, name: str | None) -> None:
+        if name:
+            self.counts[name] = self.counts.get(name, 0) + 1
+
+    def merge(self, other: ToolUsage) -> None:
+        for name, count in other.counts.items():
+            self.counts[name] = self.counts.get(name, 0) + count
+
+    @property
+    def total(self) -> int:
+        return sum(self.counts.values())
+
+    def top(self, n: int = 4) -> list[tuple[str, int]]:
+        return sorted(self.counts.items(), key=lambda kv: (-kv[1], kv[0]))[:n]
+
+    def summary(self) -> str:
+        return ", ".join(f"{name} {count}" for name, count in self.top()) or "none"
+
+
+@dataclass
+class Agent:
+    """One dispatched subagent, reconstructed from its own transcript.
+
+    ``description`` and ``agent_type`` come from the dispatching session's Agent
+    tool call; everything else comes from the subagent's transcript. Either half
+    can be missing if a record could not be parsed, which is why both are
+    optional rather than defaulted to something plausible.
+    """
+
+    agent_id: str
+    description: str | None = None
+    agent_type: str | None = None
+    session_id: str | None = None
+    started: datetime | None = None
+    ended: datetime | None = None
+    status: Status = Status.UNKNOWN
+    tools: ToolUsage = field(default_factory=ToolUsage)
+    input_tokens: int = 0
+    output_tokens: int = 0
+    cache_tokens: int = 0
+    files_touched: list[str] = field(default_factory=list)
+    commands_run: list[str] = field(default_factory=list)
+    models: list[str] = field(default_factory=list)
+    record_count: int = 0
+    prompt: str | None = None  # local page only; never enters a snapshot
+    report: str | None = None  # local page only; never enters a snapshot
+    provenance: Provenance = Provenance.LIVE
+
+    @property
+    def duration_seconds(self) -> float | None:
+        if self.started and self.ended:
+            return max((self.ended - self.started).total_seconds(), 0.0)
+        return None
+
+    @property
+    def duration_label(self) -> str:
+        return _fmt_duration(self.duration_seconds)
+
+    @property
+    def title(self) -> str:
+        return self.description or f"agent {self.agent_id[:8]}"
+
+    @property
+    def total_tokens(self) -> int:
+        """Fresh tokens only. Cache reads are counted separately in
+        ``cache_tokens`` — folding them in here would inflate the figure by
+        orders of magnitude and read as usage rather than context reuse."""
+        return self.input_tokens + self.output_tokens
+
+
+@dataclass
+class Session:
+    """A work stream — one Claude Code session."""
+
+    session_id: str
+    name: str | None = None
+    cwd: str | None = None
+    branch: str | None = None
+    started: datetime | None = None
+    ended: datetime | None = None
+    tools: ToolUsage = field(default_factory=ToolUsage)
+    models: list[str] = field(default_factory=list)
+    input_tokens: int = 0
+    output_tokens: int = 0
+    cache_tokens: int = 0
+    files_touched: list[str] = field(default_factory=list)
+    commands_run: list[str] = field(default_factory=list)
+    agent_ids: list[str] = field(default_factory=list)
+    decisions: int = 0  # AskUserQuestion / ExitPlanMode events
+    user_turns: int = 0
+    record_count: int = 0
+    unparsed_records: int = 0
+    client_version: str | None = None
+    entrypoint: str | None = None
+    provenance: Provenance = Provenance.LIVE
+
+    @property
+    def duration_seconds(self) -> float | None:
+        if self.started and self.ended:
+            return max((self.ended - self.started).total_seconds(), 0.0)
+        return None
+
+    @property
+    def duration_label(self) -> str:
+        return _fmt_duration(self.duration_seconds)
+
+    @property
+    def title(self) -> str:
+        return self.name or self.session_id[:8]
+
+    @property
+    def total_tokens(self) -> int:
+        """Fresh tokens only. Cache reads are counted separately in
+        ``cache_tokens`` — folding them in here would inflate the figure by
+        orders of magnitude and read as usage rather than context reuse."""
+        return self.input_tokens + self.output_tokens
+
+
+@dataclass
+class BuiltFile:
+    """A file an agent wrote or edited, derived from tool inputs.
+
+    Derived, not observed: this counts Write/Edit *calls*, so it reflects intent
+    to change rather than a filesystem diff. The UI labels it accordingly.
+    """
+
+    path: str
+    project: str | None = None
+    writes: int = 0
+    edits: int = 0
+    first_seen: datetime | None = None
+    last_seen: datetime | None = None
+
+    @property
+    def touches(self) -> int:
+        return self.writes + self.edits
+
+
+@dataclass
+class Commit:
+    sha: str
+    subject: str = ""
+    author: str = ""
+    timestamp: datetime | None = None
+    files_changed: int = 0
+    insertions: int = 0
+    deletions: int = 0
+    branch: str | None = None
+
+    @property
+    def short_sha(self) -> str:
+        return self.sha[:8]
+
+    @property
+    def churn(self) -> int:
+        return self.insertions + self.deletions
+
+
+@dataclass
+class Project:
+    name: str
+    path: str
+    language: str | None = None
+    loc: int = 0
+    source_files: int = 0
+    test_files: int = 0
+    test_count: int = 0
+    branch: str | None = None
+    last_commit: datetime | None = None
+    dirty: bool = False
+    extras: dict[str, str] = field(default_factory=dict)
+
+
+@dataclass
+class Plan:
+    name: str
+    path: str
+    modified: datetime | None = None
+    heading: str | None = None
+    words: int = 0
+
+
+@dataclass
+class Division:
+    """A functional grouping whose figures come from real activity."""
+
+    code: str
+    name: str
+    korean: str
+    mandate: str
+    status: Status = Status.NEVER_ACTIVE
+    last_active: datetime | None = None
+    metrics: list[tuple[str, str]] = field(default_factory=list)
+    notes: list[str] = field(default_factory=list)
+    sources: list[str] = field(default_factory=list)
+
+    @property
+    def headcount_label(self) -> str:
+        return self.metrics[0][1] if self.metrics else "—"
+
+
+@dataclass
+class SourceRef:
+    """Provenance for a panel: where the data came from and how fresh it is."""
+
+    label: str
+    path: str
+    exists: bool = True
+    modified: datetime | None = None
+
+    def age_label(self, now: datetime | None = None) -> str:
+        if not self.modified:
+            return "unknown"
+        delta = (now or datetime.now(self.modified.tzinfo)) - self.modified
+        return _humanize(delta)
+
+
+def _humanize(delta: timedelta) -> str:
+    seconds = delta.total_seconds()
+    if seconds < 0:
+        return "just now"
+    if seconds < 90:
+        return f"{seconds:.0f}s ago"
+    if seconds < 5400:
+        return f"{seconds / 60:.0f}m ago"
+    if seconds < 172_800:
+        return f"{seconds / 3600:.0f}h ago"
+    return f"{seconds / 86400:.0f}d ago"
+
+
+@dataclass
+class SchemaHealth:
+    """Surfaced, not hidden — these are undocumented internals that can drift."""
+
+    client_versions: list[str] = field(default_factory=list)
+    files_read: int = 0
+    records_read: int = 0
+    records_unparsed: int = 0
+    unknown_record_types: list[str] = field(default_factory=list)
+    warnings: list[str] = field(default_factory=list)
+
+    @property
+    def healthy(self) -> bool:
+        return self.records_unparsed == 0 and not self.warnings
+
+    @property
+    def summary(self) -> str:
+        if self.records_read == 0:
+            return "no transcript records found"
+        if self.healthy:
+            return f"{self.records_read:,} records parsed cleanly"
+        return f"{self.records_unparsed} of {self.records_read:,} records unreadable"
+
+
+@dataclass
+class Snapshot:
+    """Everything HQ knows, at one moment."""
+
+    generated_at: datetime
+    agents: list[Agent] = field(default_factory=list)
+    sessions: list[Session] = field(default_factory=list)
+    files: list[BuiltFile] = field(default_factory=list)
+    commits: list[Commit] = field(default_factory=list)
+    projects: list[Project] = field(default_factory=list)
+    plans: list[Plan] = field(default_factory=list)
+    divisions: list[Division] = field(default_factory=list)
+    sources: list[SourceRef] = field(default_factory=list)
+    schema: SchemaHealth = field(default_factory=SchemaHealth)
+    restored_sessions: int = 0
+    warnings: list[str] = field(default_factory=list)
+
+    # ------------------------------------------------------------- aggregates
+
+    @property
+    def total_tokens(self) -> int:
+        return sum(s.total_tokens for s in self.sessions)
+
+    @property
+    def total_cache_tokens(self) -> int:
+        return sum(s.cache_tokens for s in self.sessions)
+
+    @property
+    def total_tool_calls(self) -> int:
+        total = ToolUsage()
+        for session in self.sessions:
+            total.merge(session.tools)
+        for agent in self.agents:
+            total.merge(agent.tools)
+        return total.total
+
+    @property
+    def span(self) -> tuple[datetime | None, datetime | None]:
+        stamps = [s.started for s in self.sessions if s.started]
+        ends = [s.ended for s in self.sessions if s.ended]
+        return (min(stamps) if stamps else None, max(ends) if ends else None)
+
+    @property
+    def span_label(self) -> str:
+        start, end = self.span
+        if not start or not end:
+            return "—"
+        return _fmt_duration((end - start).total_seconds())
+
+    @property
+    def is_empty(self) -> bool:
+        return not (self.agents or self.sessions or self.commits)
