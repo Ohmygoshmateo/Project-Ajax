@@ -26,6 +26,7 @@ from collections.abc import Iterator
 from datetime import datetime
 from pathlib import Path
 
+from ajax_hq.behaviour import count_commands
 from ajax_hq.model import Agent, BuiltFile, SchemaHealth, Session, Status, ToolUsage
 
 DEFAULT_CLAUDE_HOME = Path.home() / ".claude"
@@ -342,6 +343,9 @@ def parse_subagent_file(path: Path, health: SchemaHealth) -> Agent:
                     agent.commands_run.append(command.strip()[:200])
 
     agent.models = models
+    # Classify the shell record now, while the commands are still in hand: they
+    # are deliberately never archived, so only these counts survive a snapshot.
+    agent.verify_runs, agent.ship_actions = count_commands(agent.commands_run)
     # The last assistant text block is the agent's final report to its caller.
     agent.report = last_text
     agent.status = Status.COMPLETED if agent.record_count else Status.UNKNOWN

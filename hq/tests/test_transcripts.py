@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 from pathlib import Path
 
 import pytest
@@ -130,6 +131,31 @@ class TestAgentExtraction:
     def test_agents_sorted_by_dispatch_time(self, claude_home: Path):
         agents = transcripts.load(claude_home)[1]
         assert [a.agent_id for a in agents] == [AGENT_A, AGENT_B]
+
+    def test_shell_record_is_classified_at_parse_time(self, claude_home: Path):
+        """The counts must be taken while the commands still exist — they are
+        never archived, so nothing downstream can recompute them."""
+        subagents = claude_home / "projects" / "-home-user-Demo" / SESSION_ID / "subagents"
+        path = subagents / f"agent-{AGENT_A}.jsonl"
+        with path.open("a") as fh:
+            for command in ("pytest -q", "ruff check .", "git commit -m 'done'", "ls -la"):
+                fh.write(json.dumps({
+                    "type": "assistant", "agentId": AGENT_A, "sessionId": SESSION_ID,
+                    "timestamp": "2026-03-02T09:01:50.000Z",
+                    "message": {"content": [
+                        {"type": "tool_use", "name": "Bash",
+                         "input": {"command": command}, "id": "z1"}]},
+                }) + "\n")
+
+        agents = {a.agent_id: a for a in transcripts.load(claude_home)[1]}
+        assert agents[AGENT_A].verify_runs == 2
+        assert agents[AGENT_A].ship_actions == 1
+
+    def test_no_commands_means_no_counts(self, claude_home: Path):
+        """`ls` is neither verification nor shipping, and is not counted as either."""
+        agents = {a.agent_id: a for a in transcripts.load(claude_home)[1]}
+        assert agents[AGENT_A].commands_run == ["ls"]
+        assert (agents[AGENT_A].verify_runs, agents[AGENT_A].ship_actions) == (0, 0)
 
     def test_dispatch_without_a_transcript_still_appears(self, claude_home: Path, tmp_path):
         """Work that was requested happened, even if the transcript is missing."""

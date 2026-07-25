@@ -96,6 +96,12 @@ class Agent:
     output_chars: int = 0
     files_touched: list[str] = field(default_factory=list)
     commands_run: list[str] = field(default_factory=list)
+    # Counts derived from commands_run at parse time. The commands themselves
+    # are never archived — they can carry credentials as arguments — so these
+    # integers are what survives into a snapshot, and they are what the floor
+    # uses to seat an agent in Quality Assurance or Operations.
+    verify_runs: int = 0
+    ship_actions: int = 0
     models: list[str] = field(default_factory=list)
     record_count: int = 0
     prompt: str | None = None  # local page only; never enters a snapshot

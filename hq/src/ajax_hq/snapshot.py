@@ -97,6 +97,11 @@ def to_payload(snapshot: Snapshot) -> dict[str, Any]:
                 # A size, not content — restoring this keeps archived agents
                 # from displaying a false zero for effort.
                 "output_chars": a.output_chars,
+                # Counts, not commands. The commands are forbidden here; these
+                # two integers are what lets a restored agent still be seated in
+                # the division whose work it actually did.
+                "verify_runs": a.verify_runs,
+                "ship_actions": a.ship_actions,
                 "files_touched": list(a.files_touched),
             }
             for a in snapshot.agents
@@ -236,6 +241,8 @@ def merge_history(snapshot: Snapshot, directory: Path | None = None) -> int:
                     output_tokens=int(row.get("output_tokens") or 0),
                     cache_tokens=int(row.get("cache_tokens") or 0),
                     output_chars=int(row.get("output_chars") or 0),
+                    verify_runs=int(row.get("verify_runs") or 0),
+                    ship_actions=int(row.get("ship_actions") or 0),
                     files_touched=list(row.get("files_touched") or []),
                     provenance=Provenance.RESTORED,
                 )

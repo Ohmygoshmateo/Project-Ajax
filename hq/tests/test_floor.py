@@ -12,7 +12,7 @@ from io import StringIO
 import pytest
 from rich.console import Console
 
-from ajax_hq import floor
+from ajax_hq import behaviour, floor
 from ajax_hq.collect import collect
 from ajax_hq.model import Agent, Division, Session, Snapshot, Status, ToolUsage
 
@@ -56,22 +56,66 @@ class TestNoInventedOccupants:
         assert "No agents or sessions found" in text
 
 
-class TestAssignment:
-    def test_subagents_go_to_rnd(self, snapshot):
-        rnd = next(w for w in floor.assign(snapshot) if w.code == "RND")
-        assert len(rnd.desks) == len(snapshot.agents)
+def worker(agent_id: str, *, name: str | None = None, tools: dict[str, int] | None = None,
+           commands: list[str] | None = None, agent_type: str = "general-purpose") -> Agent:
+    """A synthetic agent whose behaviour is stated by its tool record."""
+    agent = Agent(agent_id=agent_id, description=name or agent_id, agent_type=agent_type,
+                  status=Status.COMPLETED, tools=ToolUsage(counts=dict(tools or {})),
+                  commands_run=list(commands or []))
+    agent.verify_runs, agent.ship_actions = behaviour.count_commands(agent.commands_run)
+    return agent
 
+
+class TestAssignment:
     def test_principal_gets_the_executive_office(self, snapshot):
         exo = next(w for w in floor.assign(snapshot) if w.code == "EXO")
         assert len(exo.desks) == 1
         assert exo.desks[0].principal is True
 
-    @pytest.mark.parametrize("agent_type", ["Explore", "Plan", "general-purpose", "claude"])
-    def test_known_types_are_placed(self, agent_type):
-        assert floor._wing_for(Agent(agent_id="x", agent_type=agent_type)) == "RND"
+    def test_fixture_agents_are_seated_by_their_own_records(self, snapshot):
+        """One fixture agent only ran `ls`; the other wrote a file."""
+        seated = {w.code: [d.name for d in w.desks] for w in floor.assign(snapshot)}
+        assert seated["RND"] == ["Explore the codebase"]
+        assert seated["ENG"] == ["Verify the API"]
+
+    def test_agents_spread_across_wings_by_what_they_did(self):
+        """The point of the rule: four agents, four different divisions."""
+        snap = Snapshot(generated_at=datetime.now(UTC))
+        snap.agents = [
+            worker("a1", name="searched", tools={"WebSearch": 21, "WebFetch": 15}),
+            worker("a2", name="built", tools={"Write": 12, "Edit": 30, "Read": 20}),
+            worker("a3", name="verified", tools={"Bash": 9},
+                   commands=["pytest -q", "ruff check ."]),
+            worker("a4", name="shipped", tools={"Bash": 4},
+                   commands=["git commit -m x", "git push -u origin main"]),
+        ]
+        seated = {w.code: [d.name for d in w.desks] for w in floor.assign(snap)}
+        assert seated["RND"] == ["searched"]
+        assert seated["ENG"] == ["built"]
+        assert seated["QA"] == ["verified"]
+        assert seated["OPS"] == ["shipped"]
+
+    def test_declared_type_does_not_decide_placement(self):
+        """An Explore-typed agent that spent its run writing files is an engineer."""
+        builder = worker("b", tools={"Write": 5, "Edit": 5}, agent_type="Explore")
+        assert floor._wing_for(builder) == "ENG"
+
+    def test_an_editor_reading_its_way_around_still_places_in_engineering(self):
+        """Read-before-edit is mandatory, so builders always carry many reads."""
+        assert floor._wing_for(worker("b", tools={"Edit": 10, "Read": 20})) == "ENG"
+
+    def test_one_incidental_write_does_not_drag_a_researcher_out_of_rnd(self):
+        assert floor._wing_for(worker("r", tools={"WebSearch": 30, "Write": 1})) == "RND"
+
+    def test_read_only_git_is_investigation_not_release_work(self):
+        """`git log` to understand a repo is not release engineering."""
+        agent = worker("g", tools={"Bash": 3},
+                       commands=["git log --oneline", "git status", "git diff HEAD"])
+        assert agent.ship_actions == 0
+        assert floor._wing_for(agent) == "RND"
 
     @pytest.mark.parametrize("agent_type", ["some-future-type", "", None, "UNKNOWN"])
-    def test_unknown_types_are_placed_not_dropped(self, agent_type):
+    def test_agents_with_no_signal_are_placed_not_dropped(self, agent_type):
         """Losing a real agent to a classification gap is worse than a rough seat."""
         assert floor._wing_for(Agent(agent_id="x", agent_type=agent_type)) == "RND"
 
@@ -86,18 +130,67 @@ class TestAssignment:
 
     def test_busiest_agents_are_seated_first(self):
         snap = Snapshot(generated_at=datetime.now(UTC))
-        quiet = Agent(agent_id="a", description="quiet", agent_type="Explore")
-        busy = Agent(agent_id="b", description="busy", agent_type="Explore")
-        busy.tools = ToolUsage(counts={"Bash": 40})
+        quiet = worker("a", name="quiet", tools={"Read": 1})
+        busy = worker("b", name="busy", tools={"Read": 40})
         snap.agents = [quiet, busy]
         rnd = next(w for w in floor.assign(snap) if w.code == "RND")
         assert [d.name for d in rnd.desks] == ["busy", "quiet"]
+
+    def test_no_agent_is_lost_however_it_is_classified(self):
+        snap = Snapshot(generated_at=datetime.now(UTC))
+        snap.agents = [
+            worker("a1", tools={"WebSearch": 3}),
+            worker("a2", tools={"Write": 3}),
+            worker("a3", tools={"Bash": 1}, commands=["pytest"]),
+            worker("a4", tools={"Bash": 1}, commands=["git push"]),
+            worker("a5"),
+        ]
+        assert sum(len(w.desks) for w in floor.assign(snap)) == 5
+
+
+class TestCommandClassification:
+    @pytest.mark.parametrize(
+        "command", ["pytest -q", "ruff check .", "mypy src", "npm test", "tox -e py311"]
+    )
+    def test_verification_commands_count_as_qa(self, command):
+        assert behaviour.count_commands([command]) == (1, 0)
+
+    @pytest.mark.parametrize(
+        "command", ["git commit -m 'x'", "git push -u origin main", "git tag v1"]
+    )
+    def test_shipping_commands_count_as_ops(self, command):
+        assert behaviour.count_commands([command]) == (0, 1)
+
+    @pytest.mark.parametrize("command", ["ls -la", "cat README.md", "git status", "git log"])
+    def test_neutral_commands_count_as_neither(self, command):
+        assert behaviour.count_commands([command]) == (0, 0)
+
+    def test_a_command_can_be_both(self):
+        """`pytest && git push` genuinely did both; neither claim is invented."""
+        assert behaviour.count_commands(["pytest -q && git push"]) == (1, 1)
+
+    def test_classification_is_case_insensitive(self):
+        assert behaviour.count_commands(["PYTEST -q"]) == (1, 0)
+
+
+class TestRestoredAgentsKeepTheirWing:
+    """Commands are never archived, so the derived counts must survive instead."""
+
+    def test_a_restored_agent_still_places_in_qa(self):
+        restored = Agent(agent_id="r", agent_type="general-purpose",
+                         tools=ToolUsage(counts={"Bash": 9}), verify_runs=6)
+        assert not restored.commands_run  # exactly the archival case
+        assert floor._wing_for(restored) == "QA"
+
+    def test_a_restored_agent_still_places_in_ops(self):
+        restored = Agent(agent_id="r", tools=ToolUsage(counts={"Bash": 4}), ship_actions=3)
+        assert floor._wing_for(restored) == "OPS"
 
 
 class TestVacancy:
     def test_unstaffed_wings_are_empty_not_padded(self, snapshot):
         for wing in floor.assign(snapshot):
-            if wing.code not in {"RND", "EXO"}:
+            if wing.code not in {"RND", "EXO", "ENG"}:
                 assert wing.desks == []
 
     def test_vacant_wings_carry_a_reason(self, snapshot):

@@ -10,6 +10,9 @@ and the vacancies are real too. Most wings are currently empty because that work
 was done by the principal directly rather than delegated. A decorative office
 would have put someone at every desk; this one shows the org as it actually is.
 
+Which wing an agent sits in comes from its tool record rather than its declared
+type — see :mod:`ajax_hq.behaviour`.
+
 Rendered with Rich, which is already a dependency — no HTML, no browser.
 """
 
@@ -23,6 +26,7 @@ from rich.console import Console
 from rich.panel import Panel
 from rich.text import Text
 
+from ajax_hq.behaviour import wing_for as _wing_for
 from ajax_hq.model import Agent, Division, Session, Snapshot, Status
 
 GOLD = "#C8A951"
@@ -41,16 +45,6 @@ LAMPS: dict[Status, tuple[str, str]] = {
     Status.RUNNING: ("◐", GOLD),
     Status.UNKNOWN: ("○", "yellow3"),
     Status.IDLE: ("○", DIM),
-}
-
-# Which wing each agent type reports to. Anything unlisted falls through to RND
-# rather than being dropped — see assign().
-WING_BY_TYPE = {
-    "explore": "RND",
-    "plan": "RND",
-    "general-purpose": "RND",
-    "research": "RND",
-    "claude": "RND",
 }
 
 WING_NAMES = {
@@ -159,16 +153,6 @@ def _clip(text: str, width: int) -> str:
     return text if len(text) <= width else text[: width - 1] + "…"
 
 
-def _wing_for(agent: Agent) -> str:
-    """Where an agent sits.
-
-    An unrecognised type lands in R&D rather than being dropped: losing a real
-    agent to a classification gap would be a worse error than a rough placement,
-    and the desk displays the agent's actual type regardless.
-    """
-    return WING_BY_TYPE.get((agent.agent_type or "").lower(), "RND")
-
-
 def _vacancy_reason(code: str, divisions: list[Division]) -> str:
     """Explain an empty wing using that division's real figures."""
     division = next((d for d in divisions if d.code == code), None)
@@ -231,6 +215,12 @@ def render(snapshot: Snapshot, console: Console | None = None) -> None:
     console.print(
         Text(
             "  One desk per agent found in transcripts. Vacant wings are real.",
+            style=FAINT,
+        )
+    )
+    console.print(
+        Text(
+            "  Wings are assigned from each agent's tool record, not its declared type.",
             style=FAINT,
         )
     )

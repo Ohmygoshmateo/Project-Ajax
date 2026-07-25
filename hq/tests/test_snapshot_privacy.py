@@ -184,6 +184,35 @@ class TestMeasuredOutputSurvivesArchiving:
         for agent in fresh.agents:
             assert agent.output_chars == expected[agent.agent_id]
 
+    def test_a_shell_record_survives_only_as_counts(self, empty_home, empty_workspace,
+                                                    tmp_path):
+        """Commands can carry credentials, so only the derived counts are archived.
+
+        Without this the floor would reseat every restored QA and Operations
+        agent into R&D — a wrong picture, not merely a missing one.
+        """
+        from datetime import UTC, datetime
+
+        from ajax_hq.model import Agent, Snapshot, ToolUsage
+
+        built = Snapshot(generated_at=datetime.now(UTC))
+        built.agents = [Agent(
+            agent_id="shipper", agent_type="general-purpose",
+            tools=ToolUsage(counts={"Bash": 3}),
+            commands_run=["pytest -q", "git push --repo https://user:hunter2@example.com/r"],
+            verify_runs=1, ship_actions=1,
+        )]
+
+        history = tmp_path / "history"
+        path = snapshot_mod.write(built, history)
+        assert "hunter2" not in path.read_text()
+
+        fresh = collect(claude_home=empty_home, workspace=empty_workspace)
+        snapshot_mod.merge_history(fresh, history)
+        restored = next(a for a in fresh.agents if a.agent_id == "shipper")
+        assert (restored.verify_runs, restored.ship_actions) == (1, 1)
+        assert restored.commands_run == []
+
     def test_a_size_is_not_content(self, claude_home, empty_workspace):
         """The count travels; the text it was counted from does not."""
         import json
