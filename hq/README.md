@@ -9,6 +9,8 @@ there are no idle animations, and no panel invents state to look busy.
 ```bash
 pip install -e hq
 ajax-hq agents     # every agent that has run, in the terminal
+ajax-hq floor      # the virtual office floor, one desk per agent
+ajax-hq status     # division summary
 ajax-hq build      # writes hq/out/index.html
 ajax-hq serve      # live view on http://127.0.0.1:8787
 ajax-hq snapshot   # archive this history into the repo
@@ -44,16 +46,20 @@ drift is visible rather than silent.
 The centrepiece, and entirely real. For every subagent ever dispatched:
 
 task description, type, dispatch time, wall-clock elapsed, status, tool calls
-broken down by tool, tokens, files touched — and an expandable personnel file
-containing the full prompt it was given and the report it returned.
+broken down by tool, output size, files touched — and an expandable personnel
+file containing the full prompt it was given and the report it returned.
 
 Two columns need reading carefully:
 
 - **Elapsed** is wall-clock from dispatch to final record. An agent resumed hours
   later shows the whole span, not time spent working.
-- **Tokens** counts fresh input plus output. Cached context is listed separately,
-  because on a long session it exceeds fresh usage by two orders of magnitude and
-  would read as consumption rather than reuse.
+- **Output** is characters of text actually emitted, measured from the content
+  itself. It is *not* the reported output-token count: that field is a
+  placeholder in every subagent transcript observed so far, reporting 28 tokens
+  for a 46,861-character response. Sessions, whose counts are sound, still show
+  real tokens — with cached context listed separately, because on a long session
+  it exceeds fresh usage by two orders of magnitude and would read as
+  consumption rather than reuse.
 
 ---
 

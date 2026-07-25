@@ -11,13 +11,15 @@
       "output_chars": 1990,
       "output_tokens": 17,
       "session_id": "86e15e2b-844d-519a-a31a-b66e7ac4d5a4",
+      "ship_actions": 0,
       "started": "2026-07-25T06:24:52+00:00",
       "status": "completed",
       "tool_counts": {
         "Bash": 2,
         "Read": 1
       },
-      "type": "Explore"
+      "type": "Explore",
+      "verify_runs": 0
     },
     {
       "cache_tokens": 224608,
@@ -30,13 +32,15 @@
       "output_chars": 46861,
       "output_tokens": 28,
       "session_id": "86e15e2b-844d-519a-a31a-b66e7ac4d5a4",
+      "ship_actions": 0,
       "started": "2026-07-25T06:31:39+00:00",
       "status": "completed",
       "tool_counts": {
         "Bash": 1,
         "ToolSearch": 1
       },
-      "type": "Plan"
+      "type": "Plan",
+      "verify_runs": 0
     },
     {
       "cache_tokens": 859330,
@@ -49,13 +53,15 @@
       "output_chars": 12251,
       "output_tokens": 68,
       "session_id": "86e15e2b-844d-519a-a31a-b66e7ac4d5a4",
+      "ship_actions": 0,
       "started": "2026-07-25T06:48:55+00:00",
       "status": "completed",
       "tool_counts": {
         "ToolSearch": 1,
         "WebSearch": 14
       },
-      "type": "general-purpose"
+      "type": "general-purpose",
+      "verify_runs": 0
     },
     {
       "cache_tokens": 2616019,
@@ -68,6 +74,7 @@
       "output_chars": 13346,
       "output_tokens": 755,
       "session_id": "86e15e2b-844d-519a-a31a-b66e7ac4d5a4",
+      "ship_actions": 0,
       "started": "2026-07-25T11:04:37+00:00",
       "status": "completed",
       "tool_counts": {
@@ -77,14 +84,35 @@
         "WebSearch": 21,
         "mcp__github__get_file_contents": 2
       },
-      "type": "general-purpose"
+      "type": "general-purpose",
+      "verify_runs": 0
     }
   ],
-  "captured_at": "2026-07-25T18:36:56+00:00",
+  "captured_at": "2026-07-25T23:16:24+00:00",
   "client_versions": [
     "2.1.220"
   ],
   "commits": [
+    {
+      "author": "Claude",
+      "branch": "claude/quant-trading-options-k5w0kj",
+      "deletions": 33,
+      "files_changed": 8,
+      "insertions": 280,
+      "sha": "3fa5e8e741ae3ccba33d7d7018d50b1a11e8e47d",
+      "subject": "Seat HQ agents by what they did, not how they were dispatched",
+      "timestamp": "2026-07-25T21:42:43+00:00"
+    },
+    {
+      "author": "Claude",
+      "branch": "claude/quant-trading-options-k5w0kj",
+      "deletions": 30,
+      "files_changed": 3,
+      "insertions": 112,
+      "sha": "04d0d4cc2bfb606c01fa74fabbd667c73d7ab832",
+      "subject": "Archive measured output size in snapshots",
+      "timestamp": "2026-07-25T18:37:14+00:00"
+    },
     {
       "author": "Claude",
       "branch": "claude/quant-trading-options-k5w0kj",
@@ -528,17 +556,17 @@
       "writes": 2
     },
     {
-      "edits": 5,
+      "edits": 6,
       "first_seen": "2026-07-25T13:01:55+00:00",
-      "last_seen": "2026-07-25T18:31:35+00:00",
+      "last_seen": "2026-07-25T21:39:37+00:00",
       "path": "/home/user/Project-Ajax/hq/src/ajax_hq/model.py",
       "project": "Project-Ajax",
       "writes": 1
     },
     {
-      "edits": 3,
+      "edits": 5,
       "first_seen": "2026-07-25T13:02:55+00:00",
-      "last_seen": "2026-07-25T18:31:09+00:00",
+      "last_seen": "2026-07-25T21:39:54+00:00",
       "path": "/home/user/Project-Ajax/hq/src/ajax_hq/sources/transcripts.py",
       "project": "Project-Ajax",
       "writes": 1
@@ -584,9 +612,9 @@
       "writes": 1
     },
     {
-      "edits": 0,
+      "edits": 1,
       "first_seen": "2026-07-25T13:05:33+00:00",
-      "last_seen": "2026-07-25T13:05:33+00:00",
+      "last_seen": "2026-07-25T23:15:59+00:00",
       "path": "/home/user/Project-Ajax/hq/src/ajax_hq/collect.py",
       "project": "Project-Ajax",
       "writes": 1
@@ -608,9 +636,9 @@
       "writes": 1
     },
     {
-      "edits": 0,
+      "edits": 2,
       "first_seen": "2026-07-25T13:11:50+00:00",
-      "last_seen": "2026-07-25T13:11:50+00:00",
+      "last_seen": "2026-07-25T21:40:02+00:00",
       "path": "/home/user/Project-Ajax/hq/src/ajax_hq/snapshot.py",
       "project": "Project-Ajax",
       "writes": 1
@@ -640,17 +668,17 @@
       "writes": 1
     },
     {
-      "edits": 0,
+      "edits": 2,
       "first_seen": "2026-07-25T13:14:51+00:00",
-      "last_seen": "2026-07-25T13:14:51+00:00",
+      "last_seen": "2026-07-25T21:42:12+00:00",
       "path": "/home/user/Project-Ajax/hq/tests/test_transcripts.py",
       "project": "Project-Ajax",
       "writes": 1
     },
     {
-      "edits": 0,
+      "edits": 2,
       "first_seen": "2026-07-25T13:15:28+00:00",
-      "last_seen": "2026-07-25T13:15:28+00:00",
+      "last_seen": "2026-07-25T21:41:46+00:00",
       "path": "/home/user/Project-Ajax/hq/tests/test_snapshot_privacy.py",
       "project": "Project-Ajax",
       "writes": 1
@@ -664,26 +692,34 @@
       "writes": 1
     },
     {
-      "edits": 0,
+      "edits": 2,
       "first_seen": "2026-07-25T16:33:32+00:00",
-      "last_seen": "2026-07-25T16:33:32+00:00",
+      "last_seen": "2026-07-25T23:16:15+00:00",
       "path": "/home/user/Project-Ajax/hq/README.md",
       "project": "Project-Ajax",
       "writes": 1
     },
     {
-      "edits": 1,
+      "edits": 7,
       "first_seen": "2026-07-25T18:32:17+00:00",
-      "last_seen": "2026-07-25T18:32:49+00:00",
+      "last_seen": "2026-07-25T21:40:28+00:00",
       "path": "/home/user/Project-Ajax/hq/src/ajax_hq/floor.py",
       "project": "Project-Ajax",
       "writes": 1
     },
     {
-      "edits": 1,
+      "edits": 5,
       "first_seen": "2026-07-25T18:33:44+00:00",
-      "last_seen": "2026-07-25T18:34:07+00:00",
+      "last_seen": "2026-07-25T21:41:23+00:00",
       "path": "/home/user/Project-Ajax/hq/tests/test_floor.py",
+      "project": "Project-Ajax",
+      "writes": 1
+    },
+    {
+      "edits": 0,
+      "first_seen": "2026-07-25T21:39:30+00:00",
+      "last_seen": "2026-07-25T21:39:30+00:00",
+      "path": "/home/user/Project-Ajax/hq/src/ajax_hq/behaviour.py",
       "project": "Project-Ajax",
       "writes": 1
     }
@@ -692,12 +728,12 @@
     {
       "branch": "claude/quant-trading-options-k5w0kj",
       "language": "Python",
-      "last_commit": "2026-07-25T18:35:40+00:00",
-      "loc": 12532,
+      "last_commit": "2026-07-25T21:42:43+00:00",
+      "loc": 12793,
       "name": "Project-Ajax",
       "path": "/home/user/Project-Ajax",
-      "source_files": 82,
-      "test_count": 399,
+      "source_files": 83,
+      "test_count": 414,
       "test_files": 14
     }
   ],
@@ -705,33 +741,34 @@
   "sessions": [
     {
       "branch": "claude/quant-trading-options-k5w0kj",
-      "cache_tokens": 156390047,
+      "cache_tokens": 172444630,
       "cwd": "/home/user/Project-Ajax",
-      "decisions": 28,
-      "ended": "2026-07-25T18:36:50+00:00",
-      "files_touched": 70,
+      "decisions": 29,
+      "ended": "2026-07-25T23:16:23+00:00",
+      "files_touched": 71,
       "id": "86e15e2b-844d-519a-a31a-b66e7ac4d5a4",
-      "input_tokens": 901,
+      "input_tokens": 1068,
       "models": [
         "claude-sonnet-5",
         "claude-opus-5"
       ],
-      "name": "project-ajax-7a",
-      "output_tokens": 873711,
+      "name": "project-ajax-f6",
+      "output_tokens": 931087,
       "started": "2026-07-25T06:24:35+00:00",
       "tool_counts": {
         "Agent": 4,
-        "AskUserQuestion": 19,
-        "Bash": 91,
-        "Edit": 33,
+        "AskUserQuestion": 20,
+        "Bash": 113,
+        "Edit": 55,
         "ExitPlanMode": 9,
-        "Read": 4,
+        "Grep": 3,
+        "Read": 12,
         "SendMessage": 1,
         "SendUserFile": 1,
         "ToolSearch": 2,
-        "Write": 75
+        "Write": 76
       },
-      "user_turns": 48
+      "user_turns": 61
     }
   ]
 }

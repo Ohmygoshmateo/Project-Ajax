@@ -18,7 +18,20 @@ from ajax_hq.sources import transcripts, vcs
 from ajax_hq.sources.modules import ajax_trading
 from ajax_hq.timeutil import aware, now
 
-DEFAULT_WORKSPACE = Path("/home/user")
+
+def _default_workspace() -> Path:
+    """Where to look for projects when the caller does not say.
+
+    ``/home/user`` is the workspace root inside the cloud container this repo is
+    developed in, and nothing at all on a laptop. Falling back to the home
+    directory keeps HQ useful on both without the user having to know which one
+    they are on; ``--workspace`` overrides either.
+    """
+    container_root = Path("/home/user")
+    return container_root if container_root.is_dir() else Path.home()
+
+
+DEFAULT_WORKSPACE = _default_workspace()
 
 
 def _source_ref(label: str, path: Path) -> SourceRef:
