@@ -120,24 +120,43 @@ def agents(
         raise typer.Exit(0)
 
     table = Table(title=f"Agent roster — {len(built.agents)} dispatched")
-    table.add_column("Agent", max_width=44, overflow="ellipsis", no_wrap=True)
-    table.add_column("Type", max_width=16, overflow="ellipsis", no_wrap=True)
+    table.add_column("Agent", max_width=32, overflow="ellipsis", no_wrap=True)
+    table.add_column("Type", max_width=15, overflow="ellipsis", no_wrap=True)
     table.add_column("Status", no_wrap=True)
-    for column in ("Elapsed", "Tools", "Tokens", "Files"):
+    # "Output" is measured text emitted, not the reported token count — that
+    # field is a placeholder in subagent transcripts.
+    for column in ("Elapsed", "Tools", "Output", "Files"):
         table.add_column(column, justify="right", no_wrap=True)
 
     for agent in built.agents:
         table.add_row(
-            agent.title[:52],
+            agent.title,
             agent.agent_type or "—",
             agent.status.label,
             agent.duration_label,
             str(agent.tools.total),
-            f"{agent.total_tokens:,}",
+            agent.output_label,
             str(len(agent.files_touched)),
         )
     console.print(table)
     console.print(f"[dim]{built.schema.summary}[/]")
+    console.print("[dim]Output is measured text emitted, in characters.[/]")
+
+    note = built.schema.token_note
+    if note:
+        console.print(f"[yellow]⚠ {note}[/]")
+
+
+@app.command()
+def floor(
+    claude_home: Path = typer.Option(None, help="Override ~/.claude."),
+    workspace: Path = typer.Option(None, help="Workspace root to scan for repos."),
+    no_history: bool = typer.Option(False, help="Ignore committed snapshots."),
+) -> None:
+    """The virtual floor — a terminal office plan of who works here."""
+    from ajax_hq.floor import render as render_floor
+
+    render_floor(_build(claude_home, workspace, not no_history), console)
 
 
 @app.command()

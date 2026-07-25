@@ -91,8 +91,9 @@ class Agent:
     status: Status = Status.UNKNOWN
     tools: ToolUsage = field(default_factory=ToolUsage)
     input_tokens: int = 0
-    output_tokens: int = 0
+    output_tokens: int = 0  # UNRELIABLE for subagents — see output_chars
     cache_tokens: int = 0
+    output_chars: int = 0
     files_touched: list[str] = field(default_factory=list)
     commands_run: list[str] = field(default_factory=list)
     models: list[str] = field(default_factory=list)
@@ -119,8 +120,39 @@ class Agent:
     def total_tokens(self) -> int:
         """Fresh tokens only. Cache reads are counted separately in
         ``cache_tokens`` — folding them in here would inflate the figure by
-        orders of magnitude and read as usage rather than context reuse."""
+        orders of magnitude and read as usage rather than context reuse.
+
+        **Not displayed for agents.** ``output_tokens`` is unusable in subagent
+        transcripts (see :attr:`output_chars`), which makes this sum meaningless
+        at agent level — it reduces to ``input_tokens``. Kept for completeness
+        and for the schema-health check; the UI shows :attr:`output_label`.
+        """
         return self.input_tokens + self.output_tokens
+
+    @property
+    def output_tokens_are_plausible(self) -> bool:
+        """Does the reported output count agree with the text actually emitted?
+
+        Roughly four characters per token, so a healthy ratio is ~0.25. Observed
+        subagent transcripts report 0.001-0.06 — one to two orders of magnitude
+        low.
+
+        The 0.10 threshold is deliberately generous in one direction only: an
+        agent that emits many tool calls has *more* output tokens per character
+        of text (tool JSON is output but is not text), so a heavy tool user
+        skews this ratio **up**. A low ratio therefore always means the count is
+        under-reported, never that the agent was merely tool-heavy.
+        """
+        if self.output_chars < 500:
+            return True  # too small to judge either way
+        return (self.output_tokens / self.output_chars) >= 0.10
+
+    @property
+    def output_label(self) -> str:
+        """Measured output size, the figure the UI shows instead of tokens."""
+        if self.output_chars >= 1000:
+            return f"{self.output_chars / 1000:.1f}k"
+        return str(self.output_chars)
 
 
 @dataclass
@@ -293,6 +325,24 @@ class SchemaHealth:
     records_unparsed: int = 0
     unknown_record_types: list[str] = field(default_factory=list)
     warnings: list[str] = field(default_factory=list)
+    # Agents whose reported output_tokens contradicts the text they emitted.
+    implausible_output_tokens: list[str] = field(default_factory=list)
+
+    @property
+    def token_note(self) -> str | None:
+        """Standing note about the unusable subagent output-token field.
+
+        Stated once rather than flagged per row: every subagent transcript
+        observed so far reports a placeholder value, so a per-agent warning
+        would mark every line and tell the reader nothing.
+        """
+        if not self.implausible_output_tokens:
+            return None
+        return (
+            f"Reported output tokens are unusable for {len(self.implausible_output_tokens)} "
+            f"subagent(s) — the field reports a placeholder value regardless of response "
+            f"size. Agent effort is shown as measured text emitted instead."
+        )
 
     @property
     def healthy(self) -> bool:

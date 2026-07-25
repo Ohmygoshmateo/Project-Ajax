@@ -62,6 +62,8 @@ def _masthead(snapshot: Snapshot) -> str:
             f"These are undocumented internals (client {esc(versions)}) and the format "
             "may have changed — some panels may be incomplete.</div>"
         )
+    if snapshot.schema.token_note:
+        banners.append(f'<div class="banner">{esc(snapshot.schema.token_note)}</div>')
     if snapshot.schema.unknown_record_types:
         banners.append(
             '<div class="banner">Unrecognised record types: '
@@ -186,8 +188,10 @@ def _agent_row(agent: Agent, include_text: bool) -> str:
   </details>
 </td></tr>"""
 
+    # Measured text emitted, not the reported output_tokens — that field is a
+    # placeholder in subagent transcripts (see Agent.output_tokens_are_plausible).
     cache = (
-        f'<div class="dim" style="font-size:11px">+{agent.cache_tokens:,} cached</div>'
+        f'<div class="dim" style="font-size:11px">{agent.cache_tokens:,} ctx</div>'
         if agent.cache_tokens
         else ""
     )
@@ -203,7 +207,7 @@ def _agent_row(agent: Agent, include_text: bool) -> str:
   <td class="num">{esc(agent.duration_label)}</td>
   <td class="num">{esc(agent.tools.total)}</td>
   <td class="dim">{esc(agent.tools.summary())}</td>
-  <td class="num">{agent.total_tokens:,}{cache}</td>
+  <td class="num">{esc(agent.output_label)}{cache}</td>
   <td class="num">{esc(len(agent.files_touched))}</td>
   <td class="mono dim">{esc(_stamp(agent.started, "%m-%d %H:%M"))}</td>
 </tr>{drill_row}
@@ -223,8 +227,9 @@ def _roster(snapshot: Snapshot, include_text: bool) -> str:
     rows = "".join(_agent_row(a, include_text) for a in snapshot.agents)
     note = (
         "Elapsed is wall-clock from dispatch to final record — an agent resumed later "
-        "shows the full span, not time spent working. Token counts are fresh input plus "
-        "output; cached context is listed separately because it is reuse, not consumption."
+        "shows the full span, not time spent working. Output is measured text emitted in "
+        "characters, not the reported token count, which is a placeholder in subagent "
+        "transcripts; context reuse is listed beneath it."
     )
     return f"""
 <section class="section">
@@ -233,7 +238,7 @@ def _roster(snapshot: Snapshot, include_text: bool) -> str:
     <table>
       <thead><tr>
         <th>Agent</th><th>Type</th><th>Status</th><th>Elapsed</th><th>Tools</th>
-        <th>Breakdown</th><th>Tokens</th><th>Files</th><th>Dispatched</th>
+        <th>Breakdown</th><th>Output</th><th>Files</th><th>Dispatched</th>
       </tr></thead>
       <tbody>{rows}</tbody>
     </table>

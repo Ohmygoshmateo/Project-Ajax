@@ -324,6 +324,11 @@ def parse_subagent_file(path: Path, health: SchemaHealth) -> Agent:
                 text = block.get("text")
                 if isinstance(text, str) and text.strip():
                     last_text = text
+                    # Measured output. The reported output_tokens is a
+                    # placeholder in subagent transcripts (see
+                    # Agent.output_tokens_are_plausible), so effort is counted
+                    # from the content itself rather than trusted from usage.
+                    agent.output_chars += len(text)
 
         for name, payload, _ in _tool_uses(record):
             agent.tools.add(name)
@@ -421,6 +426,12 @@ def load(claude_home: Path | None = None) -> tuple[list[Session], list[Agent], l
         agent.prompt = agent.prompt or meta.get("prompt")
         if agent.started is None:
             agent.started = meta.get("dispatched_at")
+
+    # Record which agents report an output-token count that contradicts what
+    # they actually emitted, so the schema-health line can state it once.
+    for agent in agents.values():
+        if not agent.output_tokens_are_plausible:
+            health.implausible_output_tokens.append(agent.agent_id)
 
     ordered_agents = sorted(
         agents.values(), key=lambda a: (a.started or datetime.max.replace(tzinfo=None), a.agent_id)
