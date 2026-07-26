@@ -161,6 +161,19 @@ def floor(
 
 
 @app.command()
+def lineage(
+    claude_home: Path = typer.Option(None, help="Override ~/.claude."),
+    workspace: Path = typer.Option(None, help="Workspace root to scan for repos."),
+    no_history: bool = typer.Option(False, help="Ignore committed snapshots."),
+) -> None:
+    """Reporting lines — which session dispatched which agent."""
+    from ajax_hq.lineage import build as build_org
+    from ajax_hq.lineage import render as render_org
+
+    render_org(build_org(_build(claude_home, workspace, not no_history)), console)
+
+
+@app.command()
 def play(
     web: bool = typer.Option(False, "--web", help="Run in a browser instead of the terminal."),
     replay: bool = typer.Option(
