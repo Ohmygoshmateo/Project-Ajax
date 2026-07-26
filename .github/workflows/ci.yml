@@ -1,0 +1,36 @@
+name: checks
+
+# Ajax HQ is worked on daily and mostly by agents, so the suite has to be the
+# thing that says a change is sound — not a person remembering to run it. Every
+# push and every pull request gets the same two commands a developer would run.
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          # 3.11 is the floor the package declares: datetime.UTC does not exist
+          # before it. Testing on the floor catches a stray newer-syntax import
+          # that a later interpreter would happily accept.
+          python-version: "3.11"
+
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e hq
+          pip install pytest ruff
+
+      - name: Tests
+        working-directory: hq
+        run: python -m pytest tests -q
+
+      - name: Lint
+        working-directory: hq
+        run: python -m ruff check src tests

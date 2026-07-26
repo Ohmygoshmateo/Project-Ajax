@@ -1,0 +1,57 @@
+# Roadmap
+
+What Ajax HQ is being built toward, in priority order. Work is picked from the
+top of this list. Anything shipped moves to [CHANGELOG.md](CHANGELOG.md) and is
+deleted from here — this file describes the future only, so that it cannot
+quietly become a second, flattering record of the past.
+
+An item earns a place here by being **derivable from real records**. If HQ
+cannot measure it from transcripts, git, or the filesystem, it does not belong
+on this list however good it would look on a dashboard.
+
+---
+
+## In flight
+
+- **`ajax-hq brief`** — a daily digest: what agents did since yesterday, what
+  landed, what was verified. A quiet day must report a quiet day.
+- **`ajax-hq lineage`** — the org chart. Which session dispatched which agent,
+  built from the link already in the data. Agents whose parent is unknown are
+  grouped as unattributed, never guessed at.
+- **`ajax-hq trends`** — the committed snapshot archive read as a series rather
+  than as a set of stills. Fewer than two captures reports "not enough history"
+  rather than drawing a line.
+
+## Next
+
+- **Watch mode** — `ajax-hq agents --watch` and a live-refreshing roster, so a
+  running session can be followed without re-running commands.
+- **Cross-project view** — HQ currently walks one workspace root. Multiple roots,
+  with per-project division figures.
+- **Session detail page** — a single session's full arc: turns, decisions,
+  agents dispatched, files touched, in one view.
+- **Cost accounting** — token spend per session and per model over time, from the
+  fields that are actually sound. Agent-level output tokens stay excluded until
+  the vendor field becomes trustworthy.
+- **Search** — across transcripts, locally. Never leaves the machine.
+
+## Later
+
+- **Meeting rooms on the floor** — an `AskUserQuestion` is a real conversation
+  between the principal and the user; the floor could show it as one.
+- **Day/night on the floor** — lighting from the actual clock of the records
+  being replayed, so a 3am session looks like a 3am session.
+- **A wing per project** — the six divisions are functional. Once several
+  projects are tracked, a spatial split by project may read better.
+- **Plugin API for project modules** — the Asset Management slot proved the
+  shape; make it a documented interface rather than a convention.
+
+## Explicitly not planned
+
+- **Dispatching agents from HQ.** It is a dashboard, not a control panel. It
+  reads; it does not act.
+- **A hosted or shared deployment.** The page renders full agent prompts. It
+  stays on loopback.
+- **Simulated activity of any kind.** The floor animates, and says plainly that
+  the animation is decoration. No panel will ever show invented work.
+- **Estimated or interpolated figures.** A gap in the data is reported as a gap.
