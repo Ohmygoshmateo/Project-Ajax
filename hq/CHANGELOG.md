@@ -39,10 +39,12 @@ real transcripts, that was wrong in one direction and right in another. Every
 subagent build call *is* in the subagent's own transcript with a full
 `input.file_path`, and the ids are disjoint from the dispatching session's, so
 agent-level credit was already sound — six of ten agents place in Engineering on
-today's records. But the file *inventory* was assembled from session transcripts
-alone, so six files built entirely by subagents were invisible to HQ, including
+today's records, and "Engineering has never had staff" was a stale reading rather
+than an artefact. But the file *inventory* was assembled from session transcripts
+alone, so 15 files built entirely by subagents were invisible to HQ, including
 three of the modules shipped above. Engineering reported 88 files and 225 build
-calls where the records hold 95 and 260. `BuiltFile` now carries `agent_ids`, the
+calls against a measured 103 and 312 — it was under-reporting its own output by
+28%, and HQ held no record that `brief.py` had ever been written. `BuiltFile` now carries `agent_ids`, the
 subagent reader folds its calls into the shared inventory, and Engineering names
 the delegated share instead of reporting it as the principal's. The one genuine
 gap — an agent dispatched with no transcript on disk, whose builds cannot be
