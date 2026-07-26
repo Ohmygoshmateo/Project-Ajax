@@ -75,6 +75,10 @@ def to_payload(snapshot: Snapshot) -> dict[str, Any]:
                 "cache_tokens": s.cache_tokens,
                 "user_turns": s.user_turns,
                 "decisions": s.decisions,
+                # Ids, not content. Without these a restored session has no
+                # record of what it dispatched, so `ajax-hq lineage` could never
+                # cross-check attribution for anything read back from history.
+                "agent_ids": list(s.agent_ids),
                 "files_touched": len(s.files_touched),
             }
             for s in snapshot.sessions
@@ -218,6 +222,7 @@ def merge_history(snapshot: Snapshot, directory: Path | None = None) -> int:
                     cache_tokens=int(row.get("cache_tokens") or 0),
                     user_turns=int(row.get("user_turns") or 0),
                     decisions=int(row.get("decisions") or 0),
+                    agent_ids=[a for a in (row.get("agent_ids") or []) if isinstance(a, str)],
                     provenance=Provenance.RESTORED,
                 )
             )
