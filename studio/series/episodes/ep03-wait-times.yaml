@@ -1,0 +1,380 @@
+schema: 1
+number: 3
+title: Wait Times
+logline: >
+  Thirty-eight people in the waiting room and one of them is quietly getting
+  worse. Rowan finds him, because she has a habit. Then Deshawn brings her a
+  coffee at twenty past five and asks a question about the seventeenth.
+thread: >
+  Step three: somebody else's curiosity. Deshawn has been pulling timestamps for
+  a manager's spreadsheet and the worst night of the month is on it. He asks
+  Rowan an easy question and she answers it with the first outright lie of the
+  season.
+cliffhanger: >
+  Deshawn says he would rather hear it from her. Rowan does not ask him who
+  else there is to hear it from, and she knows, standing there, that she has
+  decided not to ask on purpose.
+
+beats:
+  # ---------------------------------------------------------------- cold open
+  - id: open-01
+    act: cold_open
+    clock: "05:20"
+    tension: 5
+    vo: >
+      There's a way of asking a question that tells you the person already has
+      the answer. Deshawn asks everything that way. It's why he's good.
+    shot:
+      description: Two paper cups on a ledge, steam, corridor lights beyond.
+      motion: hold
+    caption: "05:20"
+
+  - id: open-02
+    act: cold_open
+    clock: "05:20"
+    tension: 5
+    vo: >
+      Twenty past five in the morning and he's carrying two coffees, and if he's
+      carrying two coffees then it is not about coffee. He hands me one and he
+      says: that lady in four, back on the seventeenth. Did anything come of
+      that?
+    shot:
+      description: A cup being set down on a keyboard tray, hand withdrawing, no faces.
+      motion: drift
+
+  - id: open-03
+    act: cold_open
+    clock: "05:20"
+    tension: 4
+    vo: >
+      Did anything come of that. Okay. Right. Seven o'clock.
+    shot:
+      description: Steam over a cup, drifting, then hard cut to black.
+      motion: hold
+
+  # -------------------------------------------------------------------- setup
+  - id: set-01
+    act: setup
+    clock: "19:03"
+    tension: 1
+    vo: >
+      Seven o'clock. Handover. Deshawn's doing the voice tonight — the delayed
+      trains voice, the one where he announces the board like a man apologising
+      for a service alteration at Platform Two. Thirty-eight in the waiting
+      room. Six to be seen who have been there since teatime. Nobody's boarding,
+      for once, which means the pressure is all at the front door instead of the
+      back.
+    shot:
+      description: Whiteboard columns filling, marker in a hand, department noise implied.
+      motion: drift
+    caption: "19:03"
+
+  - id: set-02
+    act: setup
+    clock: "19:15"
+    tension: 1
+    vo: >
+      The screen in the waiting room says the current estimated wait is two
+      hours and forty minutes. It says that all the time. It said that on a
+      Tuesday afternoon in February when there were nine people in there and it
+      said it on the worst night I have ever worked. It is not a measurement.
+      It's a mood. Somewhere there is a server producing it and I would like to
+      meet whoever feeds it.
+    shot:
+      description: Wall-mounted display through wire glass, numbers glowing, rows of heads below.
+      motion: hold
+
+  - id: set-03
+    act: setup
+    clock: "19:30"
+    tension: 2
+    vo: >
+      Priya's on. She's got a new thing where she reads a chart, puts it down,
+      and then picks it up and reads it again before she does anything. She's
+      four and a half months in and she is now the most careful person on this
+      unit. I taught her that. Not by teaching her. By standing in a room at two
+      in the morning and not saying very much.
+    shot:
+      description: A chart set down on a counter, then picked up again, same hands.
+      motion: hold
+
+  - id: set-04
+    act: setup
+    clock: "19:48"
+    tension: 2
+    vo: >
+      Deshawn's been given a spreadsheet. He hates it in a way I find genuinely
+      restorative. He said, and I am quoting him exactly: they want the times,
+      Rowan. They already have the times. They want me to put the times into a
+      different shape and then send them the shape.
+    shot:
+      description: Laptop open on a cluttered desk, spreadsheet grid glare, no readable cells.
+      motion: push
+
+  - id: set-05
+    act: setup
+    clock: "20:10"
+    tension: 2
+    vo: >
+      He does it in the little office with the door open because the door
+      doesn't close, and he does it between everything else, in ninety-second
+      chunks, all night. I remember thinking: good, that'll take him a fortnight
+      at that rate.
+    shot:
+      description: A doorway with no door, light spilling out, chair back visible.
+      motion: hold
+
+  # --------------------------------------------------------------------- rise
+  - id: rise-01
+    act: rise
+    clock: "21:05"
+    tension: 2
+    vo: >
+      Nine o'clock and the waiting room is full in the way where people have
+      settled in. Coats over knees. Phones on eight percent. A gentleman in the
+      third row brought his own folding chair from his car, the fishing kind,
+      and set it up at the end of the row where there was a gap, and I want to
+      be respectful here: he was right to. He was the most comfortable person in
+      that room and he had assessed the situation correctly.
+    shot:
+      description: Rows of waiting room seats, low angle, one canvas folding chair at the end.
+      motion: hold
+    caption: "21:05"
+
+  - id: rise-02
+    act: rise
+    clock: "21:40"
+    tension: 2
+    vo: >
+      The television in there has no remote. There has never been a remote. The
+      remote is a story we tell students. So thirty-eight people are watching a
+      property programme with the subtitles on and the sound at zero, and at
+      twenty to ten a couple from somewhere near Stoke chose the villa with the
+      bad kitchen, and the entire waiting room reacted, silently, as one
+      organism. Best moment of my week.
+    shot:
+      description: Muted screen high on a bracket, subtitles bright, silhouetted seat backs.
+      motion: hold
+
+  - id: rise-03
+    act: rise
+    clock: "22:30"
+    tension: 3
+    vo: >
+      Every ninety minutes or so I walk the waiting room. It's not on a policy
+      anywhere. Nobody asked me to. I just walk the length of it and back and
+      look at people, and I couldn't tell you what I'm looking for, which is
+      annoying because I've been asked and I'd like to have an answer. I've done
+      it since my second year. It's a habit, not a system, and hold onto that
+      because it matters at half two.
+    shot:
+      description: Handheld walk along a row of seats, knees and bags, faces cropped out.
+      motion: push
+
+  - id: rise-04
+    act: rise
+    clock: "23:15"
+    tension: 3
+    vo: >
+      Quarter past eleven. There's a lad in the second row doing his homework
+      while he waits with his gran, and he asked me to check a maths question,
+      which I did, confidently, and I got it wrong, and he was extremely kind
+      about it. He said, that's alright, and he said it the way you'd say it to
+      an elderly dog. His gran laughed for about a minute and a half. I hope she
+      remembers that bit and not the seven hours.
+    shot:
+      description: An exercise book open on a knee, pencil, hospital chair arm.
+      motion: hold
+
+  - id: rise-05
+    act: rise
+    clock: "00:50"
+    tension: 3
+    vo: >
+      Ten to one. Deshawn comes past and says, staffing on the seventeenth — was
+      that the night we were down two? And I said yes, and he said, thought so,
+      and went away again, and that is a completely normal question for a man
+      building a spreadsheet about the seventeenth to ask. I did the tea round
+      after that and I did it very thoroughly.
+    shot:
+      description: Kettle steaming, six mugs lined up, hands arranging them straight.
+      motion: drift
+    caption: "00:50"
+
+  - id: rise-06
+    act: rise
+    clock: "02:30"
+    tension: 4
+    vo: >
+      Half two. I do the walk. Fifth row, on the aisle, a man who checked in at
+      twenty past nine. He was exactly as he had been at nine except for two
+      things, and I'm not going to tell you what the two things were, because
+      out of context they're useless and in the wrong hands they're worse than
+      useless. They are not clever. They're just the four hundredth time.
+    shot:
+      description: A waiting room aisle from behind, coat sleeve, one empty seat.
+      motion: hold
+
+  - id: rise-07
+    act: rise
+    clock: "02:44"
+    tension: 4
+    vo: >
+      He was in a bed in four minutes and Whitlock was with him in six, and by
+      half three he was going upstairs to people who could do more for him than
+      I can, and he was talking, and he said sorry for the trouble. And I want
+      to sit with the actual point here, because it isn't that I'm good at this.
+      There were thirty-seven other people in that room. I looked at the right
+      one because of a habit I picked up in my second year. That is not a
+      system. A system would have found him at ten.
+    shot:
+      description: Empty trolley bay, curtain moving, monitor cable coiled on a hook.
+      motion: pull
+
+  # ------------------------------------------------------------------- crisis
+  - id: crisis-01
+    act: crisis
+    clock: "05:20"
+    tension: 5
+    vo: >
+      Twenty past five. Two coffees. And I already know what it's about before
+      he says it, because that spreadsheet has the seventeenth on it — the
+      seventeenth was our worst night of the month, so of course it's on there,
+      of course it is, and he's been in the numbers for ten hours pulling times
+      out of charts and putting them in a different shape.
+    shot:
+      description: Office doorway, laptop light, two cups on the desk edge.
+      motion: push
+    caption: "05:20"
+
+  - id: crisis-02
+    act: crisis
+    clock: "05:21"
+    tension: 5
+    vo: >
+      And here's the thing he didn't ask me. He didn't ask what happened. He
+      didn't ask about bay four, or the timings, or why there's an amendment
+      sitting in a record at eleven minutes past two with nothing next to it. He
+      asked if anything came of it. That's a door with the handle left on my
+      side, and Deshawn has never once in six years done anything by accident.
+    shot:
+      description: A door with no handle, then the same frame with a hand resting on the frame.
+      motion: hold
+
+  - id: crisis-03
+    act: crisis
+    clock: "05:22"
+    tension: 5
+    vo: >
+      And I said: no. Nothing came of it. Four words. Out loud, to his face,
+      holding a coffee he'd bought me. I want to be exact about what changed
+      there, because I've been keeping a very careful account with myself for
+      twelve days. Up until twenty past five this morning I had not lied. I had
+      left things out. I was proud of the distinction. I'd been polishing it.
+    shot:
+      description: Close on a paper cup, lid, condensation, hand not moving.
+      motion: hold
+
+  - id: crisis-04
+    act: crisis
+    clock: "05:24"
+    tension: 5
+    vo: >
+      He nodded. He drank about half of his coffee. And then he said: alright.
+      And then, on his way out, not turning round, in the flattest voice he's
+      got — if there ever is something, I'd rather hear it from you.
+    shot:
+      description: Empty corridor, door swinging closed, light strip flickering once.
+      motion: hold
+
+  - id: crisis-05
+    act: crisis
+    clock: "05:25"
+    tension: 4
+    vo: >
+      I'd rather hear it from you. Than from who, Deshawn. That's the second half
+      of that sentence and he took it with him.
+    shot:
+      description: A cup left on a desk, still full, steam gone.
+      motion: hold
+
+  # ------------------------------------------------------------------ fallout
+  - id: fall-01
+    act: fallout
+    clock: "07:05"
+    tension: 3
+    vo: >
+      Seven o'clock. Handover. He read the board in the voice, and it was funny,
+      and I laughed in the right place, and I have never in my life been so
+      aware of laughing.
+    shot:
+      description: Whiteboard being wiped, morning light, cloth in a hand.
+      motion: hold
+    caption: "07:05"
+
+  - id: fall-02
+    act: fallout
+    clock: "07:09"
+    tension: 4
+    vo: >
+      Priya picked a chart up twice in front of me at about four this morning
+      and I nearly said something. Not the thing. Something smaller and more
+      cowardly, something like "you don't have to do that with me", which would
+      have been a lovely thing to say and also a way of asking her to be less
+      careful, and I'm going to leave that lying there.
+    shot:
+      description: Two charts squared on a counter, one slightly out of line.
+      motion: drift
+
+  - id: fall-03
+    act: fallout
+    clock: "07:12"
+    tension: 4
+    vo: >
+      Car park. Ten past. There's frost on everything and I've got the scraper
+      in the boot and I'm using a loyalty card, because obviously.
+    shot:
+      description: Frosted windscreen, a plastic card scraping a small clear patch.
+      motion: hold
+    caption: "07:12"
+
+  - id: fall-04
+    act: fallout
+    clock: "07:15"
+    tension: 5
+    vo: >
+      That screen in the waiting room says two hours forty. It always says two
+      hours forty. It isn't lying exactly — nobody typed it, nobody meant it,
+      it's just a number a system produces so the room has something to look at.
+      I said "nothing came of it" this morning in exactly that voice. It came
+      out smooth. It came out like a wait time.
+    shot:
+      description: Dawn light on a car bonnet, hospital sign out of focus behind.
+      motion: drift
+
+  - id: fall-05
+    act: fallout
+    clock: "07:17"
+    tension: 5
+    vo: >
+      And the thing I did not do, standing there at twenty-five past five with a
+      free coffee in my hand, was ask him the obvious question. He said he'd
+      rather hear it from me. Rather than from someone. There is a someone. He
+      knows who the someone is and he was polite enough not to name them, and I
+      was quick enough not to ask.
+    shot:
+      description: Hands on a steering wheel, engine off, breath fogging the glass.
+      motion: hold
+
+  - id: fall-06
+    act: fallout
+    clock: "07:19"
+    tension: 5
+    vo: >
+      I found a man in the fifth row at half two who nobody else was going to
+      find until it was much harder to help him. That happened tonight as well.
+      Both of those are me. I don't know what to do with a night where both of
+      those are me.
+    shot:
+      description: Windscreen wipers clearing a frost-blurred car park, then black.
+      motion: pull
