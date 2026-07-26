@@ -11,6 +11,7 @@ from rich.table import Table
 
 from ajax_hq import snapshot as snapshot_mod
 from ajax_hq.collect import DEFAULT_WORKSPACE, collect
+from ajax_hq.game.web import DEFAULT_GAME_PORT
 from ajax_hq.render import render
 from ajax_hq.serve import DEFAULT_PORT, LOOPBACK
 from ajax_hq.sources.transcripts import DEFAULT_CLAUDE_HOME
@@ -157,6 +158,52 @@ def floor(
     from ajax_hq.floor import render as render_floor
 
     render_floor(_build(claude_home, workspace, not no_history), console)
+
+
+@app.command()
+def play(
+    web: bool = typer.Option(False, "--web", help="Run in a browser instead of the terminal."),
+    replay: bool = typer.Option(
+        False, "--replay", help="Replay transcript history instead of following live."
+    ),
+    port: int = typer.Option(DEFAULT_GAME_PORT, help="Port on localhost, with --web."),
+    claude_home: Path = typer.Option(None, help="Override ~/.claude."),
+    workspace: Path = typer.Option(None, help="Workspace root to scan for repos."),
+    no_history: bool = typer.Option(False, help="Ignore committed snapshots."),
+) -> None:
+    """The floor as a live game — agents roam their wing until work arrives.
+
+    Live mode follows ``~/.claude`` as it is written, so an agent walks to
+    Engineering when it actually edits a file. On a machine where nothing is
+    running that is a still office; ``--replay`` plays back what already
+    happened instead, clearly labelled as history.
+    """
+    from ajax_hq.game.sim import Simulation
+
+    snapshot = _build(claude_home, workspace, not no_history)
+    home = claude_home or DEFAULT_CLAUDE_HOME
+
+    if web:
+        from ajax_hq.game.web import LOOPBACK as GAME_LOOPBACK
+        from ajax_hq.game.web import serve as serve_game
+
+        console.print(f"[bold]Ajax HQ floor[/] on [cyan]http://{GAME_LOOPBACK}:{port}[/]")
+        console.print("[dim]Loopback only — the state names what each agent is doing.[/]")
+        console.print("[dim]Ctrl-C to stop.[/]")
+        try:
+            serve_game(snapshot, home, port=port, live=not replay)
+        except OSError as exc:
+            console.print(f"[red]Could not bind port {port}:[/] {exc}")
+            raise typer.Exit(1) from exc
+        return
+
+    from ajax_hq.game.tui import play as play_tui
+
+    sim = Simulation.create(snapshot, home, live=not replay)
+    if not sim.floor.actors:
+        console.print("[yellow]Nobody to put on the floor — no agents or sessions found.[/]")
+        raise typer.Exit(0)
+    play_tui(sim, console)
 
 
 @app.command()

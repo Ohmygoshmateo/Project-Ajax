@@ -10,6 +10,8 @@ there are no idle animations, and no panel invents state to look busy.
 pip install -e hq
 ajax-hq agents     # every agent that has run, in the terminal
 ajax-hq floor      # the virtual office floor, one desk per agent
+ajax-hq play       # the floor as a live game — agents roam until work arrives
+ajax-hq play --web # the same simulation, on a canvas at 127.0.0.1:8788
 ajax-hq status     # division summary
 ajax-hq build      # writes hq/out/index.html
 ajax-hq serve      # live view on http://127.0.0.1:8787
@@ -105,6 +107,42 @@ pass for the wrong reason.
 
 ---
 
+## The floor as a game
+
+`ajax-hq play` runs the six wings as a live office. Each agent has a desk, drifts
+around its own wing when nothing is happening, and walks somewhere when work
+actually arrives. `--web` renders the same simulation on a canvas at
+`127.0.0.1:8788`; both views are driven by one engine, so they never disagree.
+
+What moves an actor is a real record. The tailer follows `~/.claude` as it is
+written, and each tool call sends its agent to the wing that tool implies — the
+same classification that seats agents on the static floor, so an errand and a
+desk always agree:
+
+| Record | Where the actor goes |
+| --- | --- |
+| `Write` / `Edit` | Engineering |
+| `Read` / `Grep` / `WebSearch` | Research & Development |
+| `Bash` running `pytest`, `ruff`, `mypy` | Quality Assurance |
+| `Bash` running `git commit` / `push` | Operations |
+| `Agent` / `AskUserQuestion` | Executive Office |
+| `Bash` running `ls`, `git status` | nowhere — no evidence, no movement |
+
+**Where the honesty line falls.** Who is on the floor is real: every actor is an
+agent or session found in a transcript, and an id that appears mid-run means an
+agent was just dispatched, so it walks in. Whether an actor is busy is real, and
+so is every move between wings. The drifting *inside* a wing is decoration — a
+motionless grid reads as broken, and nothing on disk records where anyone
+stands. The HUD says exactly that, and a test asserts an idle actor never leaves
+its own wing, because crossing the floor would be a claim only an event may
+make.
+
+On a machine where no agent is currently running, live mode is a still office.
+`ajax-hq play --replay` plays back the events already on disk instead, labelled
+`REPLAY` in the header and stated in the footer — history, not live activity.
+
+---
+
 ## What HQ will not do
 
 It is a dashboard, not a control panel. It dispatches nothing, runs nothing, and
@@ -122,9 +160,14 @@ interface would publish everything those agents were ever asked to do.
 cd hq && pytest -q
 ```
 
-83 tests, network-free. Weighted toward the things that would be quietly wrong
+208 tests, network-free. Weighted toward the things that would be quietly wrong
 otherwise: transcript parsing against malformed, truncated, and unknown-type
 records; agent extraction and linkage; division status derivation at the window
 boundary; snapshot privacy; HTML self-containment (no external resource refs);
 escaping of transcript text into the page; empty-state rendering; and the
 server's bind address.
+
+The game adds its own: every desk reachable from every other desk, a torn final
+line retried rather than dropped, no record delivered twice, no actor without a
+record behind it, and — the one that keeps the whole thing honest — an idle
+actor never leaving its wing without an event.
