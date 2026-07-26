@@ -32,6 +32,26 @@ def _trade_log(cfg):  # noqa: ANN001
     return TradeLog(cfg.paths.resolve("data_cache") / "ajax_trades.db")
 
 
+def _prices_or_exit(cfg, tickers: list[str] | None = None):  # noqa: ANN001
+    """Load price history, or fail with a sentence instead of a traceback.
+
+    The provider is rate-limited and free, so this is an ordinary Tuesday rather
+    than an exceptional condition: an unhandled stack trace here would read as a
+    broken install when it usually means "wait a minute and try again".
+    """
+    from ajax.agent.runner import load_prices_for_scan
+
+    try:
+        return load_prices_for_scan(cfg, tickers=tickers) if tickers else load_prices_for_scan(cfg)
+    except Exception as exc:  # noqa: BLE001
+        console.print(f"[red]Could not load price data:[/] {exc}")
+        console.print(
+            "[dim]Usually rate limiting or no network. Retry shortly; `ajax doctor` "
+            "reports what your data plan provides.[/]"
+        )
+        raise typer.Exit(1) from exc
+
+
 @app.callback()
 def main(verbose: bool = typer.Option(False, "--verbose", "-v", help="Debug logging.")) -> None:
     cfg = get_config()
@@ -125,18 +145,14 @@ def scan(
     no_chains: bool = typer.Option(False, help="Rank only; skip all chain requests."),
 ) -> None:
     """Rank the universe and show today's candidates with suggested contracts."""
-    from ajax.agent.runner import build_chain_source, load_prices_for_scan
+    from ajax.agent.runner import build_chain_source
     from ajax.agent.runner import scan as run_scan
 
     overrides = {"options": {"shortlist_size": shortlist}} if shortlist else None
     cfg = load_config(overrides) if overrides else get_config()
 
     console.print("[dim]Fetching batched price history for the universe…[/]")
-    try:
-        prices = load_prices_for_scan(cfg)
-    except Exception as exc:  # noqa: BLE001
-        console.print(f"[red]Could not load price data:[/] {exc}")
-        raise typer.Exit(1) from exc
+    prices = _prices_or_exit(cfg)
 
     source = None if no_chains else build_chain_source(cfg, prices)
     outcome = run_scan(cfg, prices, chain_source=source)
@@ -198,7 +214,7 @@ def select(
     direction: str = typer.Option("call", help="call or put."),
 ) -> None:
     """Show which contract would be chosen for one ticker, or why none is."""
-    from ajax.agent.runner import build_chain_source, load_prices_for_scan
+    from ajax.agent.runner import build_chain_source
     from ajax.data import prices as price_data
     from ajax.options.greeks import Right
     from ajax.options.selector import describe_selection, select_contract
@@ -207,7 +223,7 @@ def select(
     cfg = get_config()
     right = Right.CALL if direction.lower().startswith("c") else Right.PUT
 
-    prices = load_prices_for_scan(cfg, tickers=[ticker.upper(), cfg.universe.benchmark])
+    prices = _prices_or_exit(cfg, tickers=[ticker.upper(), cfg.universe.benchmark])
     source = build_chain_source(cfg, prices)
 
     today = date.today()
@@ -239,12 +255,12 @@ def feasibility(
     This is the command that answers whether the configured risk level and delta
     band can actually be traded together on this account.
     """
-    from ajax.agent.runner import build_chain_source, load_prices_for_scan
+    from ajax.agent.runner import build_chain_source
     from ajax.agent.runner import scan as run_scan
     from ajax.options.selector import select_contract
 
     cfg = get_config()
-    prices = load_prices_for_scan(cfg)
+    prices = _prices_or_exit(cfg)
 
     if tickers:
         names = [t.strip().upper() for t in tickers.split(",") if t.strip()]
