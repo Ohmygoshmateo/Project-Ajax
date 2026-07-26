@@ -1,0 +1,774 @@
+{
+  "agents": [
+    {
+      "cache_tokens": 136672,
+      "description": "Explore Project-Ajax repo structure",
+      "duration_s": 15.285,
+      "ended": "2026-07-25T06:25:08+00:00",
+      "files_touched": [],
+      "id": "a65e5c806b3c02361",
+      "input_tokens": 12,
+      "output_chars": 1990,
+      "output_tokens": 17,
+      "session_id": "86e15e2b-844d-519a-a31a-b66e7ac4d5a4",
+      "ship_actions": 0,
+      "started": "2026-07-25T06:24:52+00:00",
+      "status": "completed",
+      "tool_counts": {
+        "Bash": 2,
+        "Read": 1
+      },
+      "type": "Explore",
+      "verify_runs": 0
+    },
+    {
+      "cache_tokens": 224608,
+      "description": "Design quant trading scanner implementation plan",
+      "duration_s": 16918.259,
+      "ended": "2026-07-25T11:13:37+00:00",
+      "files_touched": [],
+      "id": "a8ea19671064d5ce5",
+      "input_tokens": 16,
+      "output_chars": 46861,
+      "output_tokens": 28,
+      "session_id": "86e15e2b-844d-519a-a31a-b66e7ac4d5a4",
+      "ship_actions": 0,
+      "started": "2026-07-25T06:31:39+00:00",
+      "status": "completed",
+      "tool_counts": {
+        "Bash": 1,
+        "ToolSearch": 1
+      },
+      "type": "Plan",
+      "verify_runs": 0
+    },
+    {
+      "cache_tokens": 859330,
+      "description": "Research faceless AI YouTube channel automation",
+      "duration_s": 100.476,
+      "ended": "2026-07-25T06:50:35+00:00",
+      "files_touched": [],
+      "id": "a27771b5e986b519d",
+      "input_tokens": 10336,
+      "output_chars": 12251,
+      "output_tokens": 68,
+      "session_id": "86e15e2b-844d-519a-a31a-b66e7ac4d5a4",
+      "ship_actions": 0,
+      "started": "2026-07-25T06:48:55+00:00",
+      "status": "completed",
+      "tool_counts": {
+        "ToolSearch": 1,
+        "WebSearch": 14
+      },
+      "type": "general-purpose",
+      "verify_runs": 0
+    },
+    {
+      "cache_tokens": 2616019,
+      "description": "Verify trading API assumptions",
+      "duration_s": 292.701,
+      "ended": "2026-07-25T11:09:30+00:00",
+      "files_touched": [],
+      "id": "a39f6bfb347b62d11",
+      "input_tokens": 32028,
+      "output_chars": 13346,
+      "output_tokens": 755,
+      "session_id": "86e15e2b-844d-519a-a31a-b66e7ac4d5a4",
+      "ship_actions": 0,
+      "started": "2026-07-25T11:04:37+00:00",
+      "status": "completed",
+      "tool_counts": {
+        "Bash": 2,
+        "ToolSearch": 2,
+        "WebFetch": 15,
+        "WebSearch": 21,
+        "mcp__github__get_file_contents": 2
+      },
+      "type": "general-purpose",
+      "verify_runs": 0
+    }
+  ],
+  "captured_at": "2026-07-25T23:16:24+00:00",
+  "client_versions": [
+    "2.1.220"
+  ],
+  "commits": [
+    {
+      "author": "Claude",
+      "branch": "claude/quant-trading-options-k5w0kj",
+      "deletions": 33,
+      "files_changed": 8,
+      "insertions": 280,
+      "sha": "3fa5e8e741ae3ccba33d7d7018d50b1a11e8e47d",
+      "subject": "Seat HQ agents by what they did, not how they were dispatched",
+      "timestamp": "2026-07-25T21:42:43+00:00"
+    },
+    {
+      "author": "Claude",
+      "branch": "claude/quant-trading-options-k5w0kj",
+      "deletions": 30,
+      "files_changed": 3,
+      "insertions": 112,
+      "sha": "04d0d4cc2bfb606c01fa74fabbd667c73d7ab832",
+      "subject": "Archive measured output size in snapshots",
+      "timestamp": "2026-07-25T18:37:14+00:00"
+    },
+    {
+      "author": "Claude",
+      "branch": "claude/quant-trading-options-k5w0kj",
+      "deletions": 12,
+      "files_changed": 6,
+      "insertions": 618,
+      "sha": "971a48dced76045b2138121852cb6f5326383999",
+      "subject": "Add `ajax-hq floor`, and fix unreliable agent token counts",
+      "timestamp": "2026-07-25T18:35:40+00:00"
+    },
+    {
+      "author": "Claude",
+      "branch": "claude/quant-trading-options-k5w0kj",
+      "deletions": 0,
+      "files_changed": 26,
+      "insertions": 4551,
+      "sha": "f6b8bac130441a65b7fd5ae1fbc1a6cc179ed29f",
+      "subject": "Add Ajax HQ \u2014 read-only operations centre for agent work",
+      "timestamp": "2026-07-25T16:34:04+00:00"
+    },
+    {
+      "author": "Claude",
+      "branch": "claude/quant-trading-options-k5w0kj",
+      "deletions": 1,
+      "files_changed": 74,
+      "insertions": 9322,
+      "sha": "403fedb935081f424d7237701e6253263d3a11f4",
+      "subject": "Add S&P 500 options swing-trade scanner, backtester, and paper agent",
+      "timestamp": "2026-07-25T12:19:53+00:00"
+    },
+    {
+      "author": "Ohmygoshmateo",
+      "branch": "claude/quant-trading-options-k5w0kj",
+      "deletions": 0,
+      "files_changed": 1,
+      "insertions": 1,
+      "sha": "700c8d43e849aa50532751fd2fe8dfb6f0895e8f",
+      "subject": "Initial commit",
+      "timestamp": "2026-07-24T10:50:50+00:00"
+    }
+  ],
+  "files": [
+    {
+      "edits": 10,
+      "first_seen": "2026-07-25T11:03:29+00:00",
+      "last_seen": "2026-07-25T18:29:12+00:00",
+      "path": "/root/.claude/plans/project-1-build-a-joyful-simon.md",
+      "project": null,
+      "writes": 5
+    },
+    {
+      "edits": 0,
+      "first_seen": "2026-07-25T11:46:14+00:00",
+      "last_seen": "2026-07-25T11:46:14+00:00",
+      "path": "/home/user/Project-Ajax/pyproject.toml",
+      "project": "Project-Ajax",
+      "writes": 1
+    },
+    {
+      "edits": 0,
+      "first_seen": "2026-07-25T11:46:49+00:00",
+      "last_seen": "2026-07-25T11:46:49+00:00",
+      "path": "/home/user/Project-Ajax/config/default.yaml",
+      "project": "Project-Ajax",
+      "writes": 1
+    },
+    {
+      "edits": 0,
+      "first_seen": "2026-07-25T11:47:23+00:00",
+      "last_seen": "2026-07-25T11:47:23+00:00",
+      "path": "/home/user/Project-Ajax/src/ajax/config.py",
+      "project": "Project-Ajax",
+      "writes": 1
+    },
+    {
+      "edits": 0,
+      "first_seen": "2026-07-25T11:47:35+00:00",
+      "last_seen": "2026-07-25T11:47:35+00:00",
+      "path": "/home/user/Project-Ajax/src/ajax/utils/calendar.py",
+      "project": "Project-Ajax",
+      "writes": 1
+    },
+    {
+      "edits": 0,
+      "first_seen": "2026-07-25T11:47:50+00:00",
+      "last_seen": "2026-07-25T11:47:50+00:00",
+      "path": "/home/user/Project-Ajax/src/ajax/utils/ratelimit.py",
+      "project": "Project-Ajax",
+      "writes": 1
+    },
+    {
+      "edits": 0,
+      "first_seen": "2026-07-25T11:48:01+00:00",
+      "last_seen": "2026-07-25T11:48:01+00:00",
+      "path": "/home/user/Project-Ajax/src/ajax/utils/cache.py",
+      "project": "Project-Ajax",
+      "writes": 1
+    },
+    {
+      "edits": 0,
+      "first_seen": "2026-07-25T11:48:38+00:00",
+      "last_seen": "2026-07-25T11:48:38+00:00",
+      "path": "/home/user/Project-Ajax/src/ajax/options/greeks.py",
+      "project": "Project-Ajax",
+      "writes": 1
+    },
+    {
+      "edits": 0,
+      "first_seen": "2026-07-25T11:48:53+00:00",
+      "last_seen": "2026-07-25T11:48:53+00:00",
+      "path": "/home/user/Project-Ajax/src/ajax/options/volatility.py",
+      "project": "Project-Ajax",
+      "writes": 1
+    },
+    {
+      "edits": 0,
+      "first_seen": "2026-07-25T11:49:16+00:00",
+      "last_seen": "2026-07-25T11:49:16+00:00",
+      "path": "/home/user/Project-Ajax/src/ajax/options/chain_source.py",
+      "project": "Project-Ajax",
+      "writes": 1
+    },
+    {
+      "edits": 0,
+      "first_seen": "2026-07-25T11:49:48+00:00",
+      "last_seen": "2026-07-25T11:49:48+00:00",
+      "path": "/home/user/Project-Ajax/src/ajax/options/selector.py",
+      "project": "Project-Ajax",
+      "writes": 1
+    },
+    {
+      "edits": 0,
+      "first_seen": "2026-07-25T11:50:12+00:00",
+      "last_seen": "2026-07-25T11:50:12+00:00",
+      "path": "/home/user/Project-Ajax/src/ajax/signals/indicators.py",
+      "project": "Project-Ajax",
+      "writes": 1
+    },
+    {
+      "edits": 1,
+      "first_seen": "2026-07-25T11:50:35+00:00",
+      "last_seen": "2026-07-25T11:50:44+00:00",
+      "path": "/home/user/Project-Ajax/src/ajax/signals/scoring.py",
+      "project": "Project-Ajax",
+      "writes": 1
+    },
+    {
+      "edits": 0,
+      "first_seen": "2026-07-25T11:50:56+00:00",
+      "last_seen": "2026-07-25T11:50:56+00:00",
+      "path": "/home/user/Project-Ajax/src/ajax/signals/labels.py",
+      "project": "Project-Ajax",
+      "writes": 1
+    },
+    {
+      "edits": 0,
+      "first_seen": "2026-07-25T11:51:12+00:00",
+      "last_seen": "2026-07-25T11:51:12+00:00",
+      "path": "/home/user/Project-Ajax/src/ajax/portfolio/sizing.py",
+      "project": "Project-Ajax",
+      "writes": 1
+    },
+    {
+      "edits": 0,
+      "first_seen": "2026-07-25T11:51:24+00:00",
+      "last_seen": "2026-07-25T11:51:24+00:00",
+      "path": "/home/user/Project-Ajax/src/ajax/portfolio/allocator.py",
+      "project": "Project-Ajax",
+      "writes": 1
+    },
+    {
+      "edits": 0,
+      "first_seen": "2026-07-25T11:51:34+00:00",
+      "last_seen": "2026-07-25T11:51:34+00:00",
+      "path": "/home/user/Project-Ajax/src/ajax/data/symbols.py",
+      "project": "Project-Ajax",
+      "writes": 1
+    },
+    {
+      "edits": 0,
+      "first_seen": "2026-07-25T11:52:00+00:00",
+      "last_seen": "2026-07-25T11:52:00+00:00",
+      "path": "/home/user/Project-Ajax/src/ajax/data/universe.py",
+      "project": "Project-Ajax",
+      "writes": 1
+    },
+    {
+      "edits": 0,
+      "first_seen": "2026-07-25T11:54:09+00:00",
+      "last_seen": "2026-07-25T11:54:09+00:00",
+      "path": "/home/user/Project-Ajax/src/ajax/data/prices.py",
+      "project": "Project-Ajax",
+      "writes": 1
+    },
+    {
+      "edits": 0,
+      "first_seen": "2026-07-25T11:54:28+00:00",
+      "last_seen": "2026-07-25T11:54:28+00:00",
+      "path": "/home/user/Project-Ajax/src/ajax/data/news.py",
+      "project": "Project-Ajax",
+      "writes": 1
+    },
+    {
+      "edits": 0,
+      "first_seen": "2026-07-25T11:55:07+00:00",
+      "last_seen": "2026-07-25T11:55:07+00:00",
+      "path": "/home/user/Project-Ajax/src/ajax/broker/contracts.py",
+      "project": "Project-Ajax",
+      "writes": 1
+    },
+    {
+      "edits": 0,
+      "first_seen": "2026-07-25T11:55:47+00:00",
+      "last_seen": "2026-07-25T11:55:47+00:00",
+      "path": "/home/user/Project-Ajax/src/ajax/data/alpaca_options.py",
+      "project": "Project-Ajax",
+      "writes": 1
+    },
+    {
+      "edits": 0,
+      "first_seen": "2026-07-25T11:56:12+00:00",
+      "last_seen": "2026-07-25T11:56:12+00:00",
+      "path": "/home/user/Project-Ajax/src/ajax/data/yf_options.py",
+      "project": "Project-Ajax",
+      "writes": 1
+    },
+    {
+      "edits": 0,
+      "first_seen": "2026-07-25T11:56:30+00:00",
+      "last_seen": "2026-07-25T11:56:30+00:00",
+      "path": "/home/user/Project-Ajax/src/ajax/broker/alpaca_client.py",
+      "project": "Project-Ajax",
+      "writes": 1
+    },
+    {
+      "edits": 0,
+      "first_seen": "2026-07-25T11:56:50+00:00",
+      "last_seen": "2026-07-25T11:56:50+00:00",
+      "path": "/home/user/Project-Ajax/src/ajax/broker/orders.py",
+      "project": "Project-Ajax",
+      "writes": 1
+    },
+    {
+      "edits": 0,
+      "first_seen": "2026-07-25T11:57:28+00:00",
+      "last_seen": "2026-07-25T11:57:28+00:00",
+      "path": "/home/user/Project-Ajax/src/ajax/agent/trade_log.py",
+      "project": "Project-Ajax",
+      "writes": 1
+    },
+    {
+      "edits": 0,
+      "first_seen": "2026-07-25T11:57:51+00:00",
+      "last_seen": "2026-07-25T11:57:51+00:00",
+      "path": "/home/user/Project-Ajax/src/ajax/agent/graduation.py",
+      "project": "Project-Ajax",
+      "writes": 1
+    },
+    {
+      "edits": 0,
+      "first_seen": "2026-07-25T11:58:08+00:00",
+      "last_seen": "2026-07-25T11:58:08+00:00",
+      "path": "/home/user/Project-Ajax/src/ajax/backtest/costs.py",
+      "project": "Project-Ajax",
+      "writes": 1
+    },
+    {
+      "edits": 0,
+      "first_seen": "2026-07-25T11:58:34+00:00",
+      "last_seen": "2026-07-25T11:58:34+00:00",
+      "path": "/home/user/Project-Ajax/src/ajax/backtest/price_source.py",
+      "project": "Project-Ajax",
+      "writes": 1
+    },
+    {
+      "edits": 2,
+      "first_seen": "2026-07-25T11:59:34+00:00",
+      "last_seen": "2026-07-25T12:11:45+00:00",
+      "path": "/home/user/Project-Ajax/src/ajax/backtest/engine.py",
+      "project": "Project-Ajax",
+      "writes": 1
+    },
+    {
+      "edits": 0,
+      "first_seen": "2026-07-25T11:59:55+00:00",
+      "last_seen": "2026-07-25T11:59:55+00:00",
+      "path": "/home/user/Project-Ajax/src/ajax/backtest/metrics.py",
+      "project": "Project-Ajax",
+      "writes": 1
+    },
+    {
+      "edits": 1,
+      "first_seen": "2026-07-25T12:00:32+00:00",
+      "last_seen": "2026-07-25T12:17:22+00:00",
+      "path": "/home/user/Project-Ajax/src/ajax/backtest/report.py",
+      "project": "Project-Ajax",
+      "writes": 1
+    },
+    {
+      "edits": 1,
+      "first_seen": "2026-07-25T12:00:59+00:00",
+      "last_seen": "2026-07-25T12:18:48+00:00",
+      "path": "/home/user/Project-Ajax/src/ajax/backtest/tuner.py",
+      "project": "Project-Ajax",
+      "writes": 1
+    },
+    {
+      "edits": 0,
+      "first_seen": "2026-07-25T12:01:31+00:00",
+      "last_seen": "2026-07-25T12:01:31+00:00",
+      "path": "/home/user/Project-Ajax/src/ajax/capabilities.py",
+      "project": "Project-Ajax",
+      "writes": 1
+    },
+    {
+      "edits": 0,
+      "first_seen": "2026-07-25T12:01:56+00:00",
+      "last_seen": "2026-07-25T12:01:56+00:00",
+      "path": "/home/user/Project-Ajax/src/ajax/live/gate.py",
+      "project": "Project-Ajax",
+      "writes": 1
+    },
+    {
+      "edits": 0,
+      "first_seen": "2026-07-25T12:02:44+00:00",
+      "last_seen": "2026-07-25T12:02:44+00:00",
+      "path": "/home/user/Project-Ajax/src/ajax/agent/runner.py",
+      "project": "Project-Ajax",
+      "writes": 1
+    },
+    {
+      "edits": 0,
+      "first_seen": "2026-07-25T12:04:27+00:00",
+      "last_seen": "2026-07-25T12:04:27+00:00",
+      "path": "/home/user/Project-Ajax/src/ajax/cli.py",
+      "project": "Project-Ajax",
+      "writes": 1
+    },
+    {
+      "edits": 0,
+      "first_seen": "2026-07-25T12:05:15+00:00",
+      "last_seen": "2026-07-25T12:05:15+00:00",
+      "path": "/home/user/Project-Ajax/tests/test_greeks.py",
+      "project": "Project-Ajax",
+      "writes": 1
+    },
+    {
+      "edits": 0,
+      "first_seen": "2026-07-25T12:06:09+00:00",
+      "last_seen": "2026-07-25T12:06:09+00:00",
+      "path": "/home/user/Project-Ajax/tests/test_selector.py",
+      "project": "Project-Ajax",
+      "writes": 1
+    },
+    {
+      "edits": 0,
+      "first_seen": "2026-07-25T12:06:38+00:00",
+      "last_seen": "2026-07-25T12:06:38+00:00",
+      "path": "/home/user/Project-Ajax/tests/test_indicators.py",
+      "project": "Project-Ajax",
+      "writes": 1
+    },
+    {
+      "edits": 0,
+      "first_seen": "2026-07-25T12:07:19+00:00",
+      "last_seen": "2026-07-25T12:07:19+00:00",
+      "path": "/home/user/Project-Ajax/tests/test_graduation.py",
+      "project": "Project-Ajax",
+      "writes": 1
+    },
+    {
+      "edits": 0,
+      "first_seen": "2026-07-25T12:07:53+00:00",
+      "last_seen": "2026-07-25T12:07:53+00:00",
+      "path": "/home/user/Project-Ajax/tests/test_sizing.py",
+      "project": "Project-Ajax",
+      "writes": 1
+    },
+    {
+      "edits": 0,
+      "first_seen": "2026-07-25T12:08:25+00:00",
+      "last_seen": "2026-07-25T12:08:25+00:00",
+      "path": "/home/user/Project-Ajax/tests/test_metrics.py",
+      "project": "Project-Ajax",
+      "writes": 1
+    },
+    {
+      "edits": 1,
+      "first_seen": "2026-07-25T12:09:09+00:00",
+      "last_seen": "2026-07-25T12:09:23+00:00",
+      "path": "/home/user/Project-Ajax/tests/test_data_layer.py",
+      "project": "Project-Ajax",
+      "writes": 1
+    },
+    {
+      "edits": 0,
+      "first_seen": "2026-07-25T12:09:45+00:00",
+      "last_seen": "2026-07-25T12:09:45+00:00",
+      "path": "/home/user/Project-Ajax/tests/test_calendar_volatility.py",
+      "project": "Project-Ajax",
+      "writes": 1
+    },
+    {
+      "edits": 0,
+      "first_seen": "2026-07-25T12:10:37+00:00",
+      "last_seen": "2026-07-25T12:10:37+00:00",
+      "path": "/home/user/Project-Ajax/tests/test_backtest_engine.py",
+      "project": "Project-Ajax",
+      "writes": 1
+    },
+    {
+      "edits": 0,
+      "first_seen": "2026-07-25T12:13:50+00:00",
+      "last_seen": "2026-07-25T12:13:50+00:00",
+      "path": "/home/user/Project-Ajax/tests/test_trade_log.py",
+      "project": "Project-Ajax",
+      "writes": 1
+    },
+    {
+      "edits": 0,
+      "first_seen": "2026-07-25T12:14:27+00:00",
+      "last_seen": "2026-07-25T12:14:27+00:00",
+      "path": "/home/user/Project-Ajax/docs/LIMITATIONS.md",
+      "project": "Project-Ajax",
+      "writes": 1
+    },
+    {
+      "edits": 0,
+      "first_seen": "2026-07-25T12:14:49+00:00",
+      "last_seen": "2026-07-25T12:14:49+00:00",
+      "path": "/home/user/Project-Ajax/docs/CAPITAL_CONSTRAINT.md",
+      "project": "Project-Ajax",
+      "writes": 1
+    },
+    {
+      "edits": 0,
+      "first_seen": "2026-07-25T12:15:35+00:00",
+      "last_seen": "2026-07-25T12:16:13+00:00",
+      "path": "/home/user/Project-Ajax/README.md",
+      "project": "Project-Ajax",
+      "writes": 2
+    },
+    {
+      "edits": 6,
+      "first_seen": "2026-07-25T13:01:55+00:00",
+      "last_seen": "2026-07-25T21:39:37+00:00",
+      "path": "/home/user/Project-Ajax/hq/src/ajax_hq/model.py",
+      "project": "Project-Ajax",
+      "writes": 1
+    },
+    {
+      "edits": 5,
+      "first_seen": "2026-07-25T13:02:55+00:00",
+      "last_seen": "2026-07-25T21:39:54+00:00",
+      "path": "/home/user/Project-Ajax/hq/src/ajax_hq/sources/transcripts.py",
+      "project": "Project-Ajax",
+      "writes": 1
+    },
+    {
+      "edits": 0,
+      "first_seen": "2026-07-25T13:03:24+00:00",
+      "last_seen": "2026-07-25T13:03:24+00:00",
+      "path": "/home/user/Project-Ajax/hq/src/ajax_hq/sources/sessions.py",
+      "project": "Project-Ajax",
+      "writes": 1
+    },
+    {
+      "edits": 0,
+      "first_seen": "2026-07-25T13:03:38+00:00",
+      "last_seen": "2026-07-25T13:03:38+00:00",
+      "path": "/home/user/Project-Ajax/hq/src/ajax_hq/sources/vcs.py",
+      "project": "Project-Ajax",
+      "writes": 1
+    },
+    {
+      "edits": 0,
+      "first_seen": "2026-07-25T13:03:58+00:00",
+      "last_seen": "2026-07-25T13:03:58+00:00",
+      "path": "/home/user/Project-Ajax/hq/src/ajax_hq/sources/projects.py",
+      "project": "Project-Ajax",
+      "writes": 1
+    },
+    {
+      "edits": 0,
+      "first_seen": "2026-07-25T13:04:16+00:00",
+      "last_seen": "2026-07-25T13:04:16+00:00",
+      "path": "/home/user/Project-Ajax/hq/src/ajax_hq/sources/modules/ajax_trading.py",
+      "project": "Project-Ajax",
+      "writes": 1
+    },
+    {
+      "edits": 1,
+      "first_seen": "2026-07-25T13:05:14+00:00",
+      "last_seen": "2026-07-25T13:06:16+00:00",
+      "path": "/home/user/Project-Ajax/hq/src/ajax_hq/divisions.py",
+      "project": "Project-Ajax",
+      "writes": 1
+    },
+    {
+      "edits": 1,
+      "first_seen": "2026-07-25T13:05:33+00:00",
+      "last_seen": "2026-07-25T23:15:59+00:00",
+      "path": "/home/user/Project-Ajax/hq/src/ajax_hq/collect.py",
+      "project": "Project-Ajax",
+      "writes": 1
+    },
+    {
+      "edits": 2,
+      "first_seen": "2026-07-25T13:07:20+00:00",
+      "last_seen": "2026-07-25T16:32:46+00:00",
+      "path": "/home/user/Project-Ajax/hq/src/ajax_hq/assets.py",
+      "project": "Project-Ajax",
+      "writes": 1
+    },
+    {
+      "edits": 1,
+      "first_seen": "2026-07-25T13:08:22+00:00",
+      "last_seen": "2026-07-25T13:10:47+00:00",
+      "path": "/home/user/Project-Ajax/hq/src/ajax_hq/render.py",
+      "project": "Project-Ajax",
+      "writes": 1
+    },
+    {
+      "edits": 2,
+      "first_seen": "2026-07-25T13:11:50+00:00",
+      "last_seen": "2026-07-25T21:40:02+00:00",
+      "path": "/home/user/Project-Ajax/hq/src/ajax_hq/snapshot.py",
+      "project": "Project-Ajax",
+      "writes": 1
+    },
+    {
+      "edits": 0,
+      "first_seen": "2026-07-25T13:12:10+00:00",
+      "last_seen": "2026-07-25T13:12:10+00:00",
+      "path": "/home/user/Project-Ajax/hq/src/ajax_hq/serve.py",
+      "project": "Project-Ajax",
+      "writes": 1
+    },
+    {
+      "edits": 3,
+      "first_seen": "2026-07-25T13:12:35+00:00",
+      "last_seen": "2026-07-25T18:34:41+00:00",
+      "path": "/home/user/Project-Ajax/hq/src/ajax_hq/cli.py",
+      "project": "Project-Ajax",
+      "writes": 1
+    },
+    {
+      "edits": 0,
+      "first_seen": "2026-07-25T13:14:21+00:00",
+      "last_seen": "2026-07-25T13:14:21+00:00",
+      "path": "/home/user/Project-Ajax/hq/tests/conftest.py",
+      "project": "Project-Ajax",
+      "writes": 1
+    },
+    {
+      "edits": 2,
+      "first_seen": "2026-07-25T13:14:51+00:00",
+      "last_seen": "2026-07-25T21:42:12+00:00",
+      "path": "/home/user/Project-Ajax/hq/tests/test_transcripts.py",
+      "project": "Project-Ajax",
+      "writes": 1
+    },
+    {
+      "edits": 2,
+      "first_seen": "2026-07-25T13:15:28+00:00",
+      "last_seen": "2026-07-25T21:41:46+00:00",
+      "path": "/home/user/Project-Ajax/hq/tests/test_snapshot_privacy.py",
+      "project": "Project-Ajax",
+      "writes": 1
+    },
+    {
+      "edits": 0,
+      "first_seen": "2026-07-25T13:16:08+00:00",
+      "last_seen": "2026-07-25T13:16:08+00:00",
+      "path": "/home/user/Project-Ajax/hq/tests/test_render_and_serve.py",
+      "project": "Project-Ajax",
+      "writes": 1
+    },
+    {
+      "edits": 2,
+      "first_seen": "2026-07-25T16:33:32+00:00",
+      "last_seen": "2026-07-25T23:16:15+00:00",
+      "path": "/home/user/Project-Ajax/hq/README.md",
+      "project": "Project-Ajax",
+      "writes": 1
+    },
+    {
+      "edits": 7,
+      "first_seen": "2026-07-25T18:32:17+00:00",
+      "last_seen": "2026-07-25T21:40:28+00:00",
+      "path": "/home/user/Project-Ajax/hq/src/ajax_hq/floor.py",
+      "project": "Project-Ajax",
+      "writes": 1
+    },
+    {
+      "edits": 5,
+      "first_seen": "2026-07-25T18:33:44+00:00",
+      "last_seen": "2026-07-25T21:41:23+00:00",
+      "path": "/home/user/Project-Ajax/hq/tests/test_floor.py",
+      "project": "Project-Ajax",
+      "writes": 1
+    },
+    {
+      "edits": 0,
+      "first_seen": "2026-07-25T21:39:30+00:00",
+      "last_seen": "2026-07-25T21:39:30+00:00",
+      "path": "/home/user/Project-Ajax/hq/src/ajax_hq/behaviour.py",
+      "project": "Project-Ajax",
+      "writes": 1
+    }
+  ],
+  "projects": [
+    {
+      "branch": "claude/quant-trading-options-k5w0kj",
+      "language": "Python",
+      "last_commit": "2026-07-25T21:42:43+00:00",
+      "loc": 12793,
+      "name": "Project-Ajax",
+      "path": "/home/user/Project-Ajax",
+      "source_files": 83,
+      "test_count": 414,
+      "test_files": 14
+    }
+  ],
+  "schema": 1,
+  "sessions": [
+    {
+      "branch": "claude/quant-trading-options-k5w0kj",
+      "cache_tokens": 172444630,
+      "cwd": "/home/user/Project-Ajax",
+      "decisions": 29,
+      "ended": "2026-07-25T23:16:23+00:00",
+      "files_touched": 71,
+      "id": "86e15e2b-844d-519a-a31a-b66e7ac4d5a4",
+      "input_tokens": 1068,
+      "models": [
+        "claude-sonnet-5",
+        "claude-opus-5"
+      ],
+      "name": "project-ajax-f6",
+      "output_tokens": 931087,
+      "started": "2026-07-25T06:24:35+00:00",
+      "tool_counts": {
+        "Agent": 4,
+        "AskUserQuestion": 20,
+        "Bash": 113,
+        "Edit": 55,
+        "ExitPlanMode": 9,
+        "Grep": 3,
+        "Read": 12,
+        "SendMessage": 1,
+        "SendUserFile": 1,
+        "ToolSearch": 2,
+        "Write": 76
+      },
+      "user_turns": 61
+    }
+  ]
+}
