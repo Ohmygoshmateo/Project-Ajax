@@ -1,0 +1,39 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ajax-studio"
+version = "0.1.0"
+description = "Bay Four — a scripted faceless series, and the pipeline that builds it"
+requires-python = ">=3.11"
+dependencies = [
+    "typer>=0.12",
+    "rich>=13.0",
+    "PyYAML>=6.0",
+    "pillow>=10.0",
+    # A statically-linked ffmpeg as a wheel. The alternative is a system package,
+    # which cannot be assumed on a laptop and cannot be installed in CI without
+    # apt — this way `pip install -e studio` is the whole setup.
+    "imageio-ffmpeg>=0.4.9",
+]
+
+[project.scripts]
+ajax-studio = "ajax_studio.cli:app"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+# B008: typer.Option(...) in a default is Typer's documented API.
+# UP042: `str, Enum` is deliberate — those values are serialized into YAML.
+ignore = ["E501", "UP042", "B008"]
