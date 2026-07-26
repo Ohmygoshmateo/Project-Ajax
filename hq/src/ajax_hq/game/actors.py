@@ -63,6 +63,10 @@ class Actor:
     busy_for: float = 0.0
     step_progress: float = 0.0
     last_detail: str = ""
+    # What the actor is visibly doing, straight from the last record. Cleared to
+    # idle the moment that record stops being recent — an actor is never given
+    # something to look busy with.
+    activity: str = "idle"
     events_seen: int = 0
     # Set when an actor was created by an event rather than from the snapshot —
     # it appeared while the game was running.

@@ -213,6 +213,26 @@ class TestMeasuredOutputSurvivesArchiving:
         assert (restored.verify_runs, restored.ship_actions) == (1, 1)
         assert restored.commands_run == []
 
+    def test_dispatch_lists_survive_so_lineage_works_on_restored_records(
+        self, claude_home, empty_workspace, empty_home, tmp_path
+    ):
+        """A restored session must still know what it dispatched.
+
+        Agent ids are identifiers, not content — without them the org chart
+        silently loses every edge the moment a container is replaced.
+        """
+        history = tmp_path / "history"
+        original = _built(claude_home, empty_workspace)
+        expected = {s.session_id: sorted(s.agent_ids) for s in original.sessions}
+        assert any(v for v in expected.values())
+
+        snapshot_mod.write(original, history)
+        fresh = collect(claude_home=empty_home, workspace=empty_workspace)
+        snapshot_mod.merge_history(fresh, history)
+
+        for session in fresh.sessions:
+            assert sorted(session.agent_ids) == expected[session.session_id]
+
     def test_a_size_is_not_content(self, claude_home, empty_workspace):
         """The count travels; the text it was counted from does not."""
         import json

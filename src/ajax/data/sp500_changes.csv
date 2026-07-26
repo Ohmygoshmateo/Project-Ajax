@@ -1,8 +1,0 @@
-# S&P 500 constituent changes, newest first. Used by the backtest to reconstruct
-# index membership on a past date instead of applying today's list backwards
-# (which is a well-known source of optimistic survivorship bias).
-#
-# Columns: date,added,removed  — one row per swap. Leave a cell blank for a
-# one-sided change. This file ships intentionally sparse; the backtest reports
-# how much of the window it could reconstruct rather than pretending to know.
-date,added,removed

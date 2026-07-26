@@ -161,10 +161,19 @@ class TestDivisionStatus:
         assert just_inside.status is Status.ACTIVE
         assert just_outside.status is Status.IDLE
 
-    def test_asset_management_names_the_command_when_absent(self):
+    def test_asset_management_says_no_module_is_installed(self):
+        """An empty division explains itself instead of rendering zeros."""
         division = divisions_mod.asset_management({}, None)
         assert division.status is Status.NEVER_ACTIVE
-        assert any("ajax agent run-once" in note for note in division.notes)
+        assert any("No project module installed" in note for note in division.notes)
+
+    def test_a_module_supplying_figures_is_labelled_as_such(self):
+        """Module figures are not derived from transcripts, and must not read as if."""
+        from ajax_hq.timeutil import now
+
+        division = divisions_mod.asset_management({"Positions": "3"}, now())
+        assert division.metrics == [("Positions", "3")]
+        assert any("project module" in note for note in division.notes)
 
     def test_qa_disclaims_outcomes(self, claude_home, empty_workspace):
         built = collect(claude_home=claude_home, workspace=empty_workspace)

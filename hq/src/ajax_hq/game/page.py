@@ -51,7 +51,21 @@ PAGE = """<!doctype html>
   #floor { max-width: 100%; height: auto; display: block; margin: 0 auto;
            image-rendering: pixelated; }
   .roster { border: 1px solid var(--line); border-radius: 4px; background: var(--panel);
-            max-height: 74vh; overflow-y: auto; }
+            max-height: 46vh; overflow-y: auto; }
+  .feed { margin-top: 12px; border: 1px solid var(--line); border-radius: 4px;
+          background: var(--panel); }
+  .feed-head { padding: 7px 10px; font-size: 10px; letter-spacing: 0.1em;
+               color: var(--faint); border-bottom: 1px solid var(--line); }
+  #feed { max-height: 30vh; overflow-y: auto; }
+  .line { display: grid; grid-template-columns: 56px 12px 1fr; gap: 7px;
+          padding: 5px 10px; font-size: 11px; align-items: baseline;
+          border-bottom: 1px solid rgba(255,255,255,0.03); }
+  .line:last-child { border-bottom: 0; }
+  .line time { color: var(--faint); font-variant-numeric: tabular-nums; }
+  .line .dot { width: 6px; height: 6px; border-radius: 50%; align-self: center; }
+  .line .txt { overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+               color: var(--dim); }
+  .line .txt b { color: #E8ECF4; font-weight: 600; }
   .who { display: grid; grid-template-columns: 20px 1fr auto; gap: 9px; align-items: center;
          padding: 7px 10px; border-bottom: 1px solid rgba(255,255,255,0.04); }
   .who:last-child { border-bottom: 0; }
@@ -75,7 +89,13 @@ PAGE = """<!doctype html>
 </header>
 <main>
   <div class="stage"><canvas id="floor"></canvas></div>
-  <div class="roster" id="roster"></div>
+  <div>
+    <div class="roster" id="roster"></div>
+    <div class="feed">
+      <div class="feed-head">ACTIVITY · every line is a record on disk</div>
+      <div id="feed"></div>
+    </div>
+  </div>
 </main>
 <footer id="caveat"></footer>
 <script>
@@ -126,8 +146,10 @@ function px(g, x, y, w, h, color) { g.fillStyle = color; g.fillRect(x, y, w, h);
 /**
  * One character frame, drawn into `g` at sprite-pixel scale 1.
  * dir: 'down' | 'up' | 'left' | 'right';  step: 0..3 walk phase; sit: seated.
+ * act: the activity pose — typing raises the forearms, reading holds a page,
+ * talking lifts one hand. Each pose is produced by a specific kind of record.
  */
-function drawCharacter(g, pal, dir, step, sit) {
+function drawCharacter(g, pal, dir, step, sit, act) {
   const side = dir === 'left' || dir === 'right';
   const back = dir === 'up';
   const lift = (step === 1) ? 1 : (step === 3) ? 1 : 0;   // limb swing phase
@@ -151,12 +173,30 @@ function drawCharacter(g, pal, dir, step, sit) {
 
   // torso
   px(g, 2, top + 6, 8, 6, pal.shirt);
-  // arms — swing opposite the legs
+
+  // arms — the pose is the activity, and the activity came from a record
   const armY = top + 6 + lift;
-  px(g, 1, armY, 1, 5, pal.shirt);
-  px(g, 10, armY + (lift ? -1 : 0), 1, 5, pal.shirt);
-  px(g, 1, armY + 5, 1, 1, pal.skin);
-  px(g, 10, armY + 5 + (lift ? -1 : 0), 1, 1, pal.skin);
+  if (act === 'typing') {
+    // forearms forward over the keys, alternating on the animation phase
+    px(g, 1, armY + 1, 2, 3, pal.shirt); px(g, 9, armY + 1, 2, 3, pal.shirt);
+    px(g, 1, armY + 4 + (step % 2), 2, 1, pal.skin);
+    px(g, 9, armY + 4 + ((step + 1) % 2), 2, 1, pal.skin);
+  } else if (act === 'reading') {
+    px(g, 1, armY + 1, 1, 4, pal.shirt); px(g, 10, armY + 1, 1, 4, pal.shirt);
+    px(g, 2, armY + 3, 8, 4, '#E8E2D2');            // a page, held up
+    px(g, 3, armY + 4, 6, 1, '#9AA3B2');
+    px(g, 3, armY + 6, 4, 1, '#9AA3B2');
+  } else if (act === 'talking') {
+    px(g, 1, armY, 1, 5, pal.shirt);
+    px(g, 10, armY - 2, 1, 4, pal.shirt);           // one hand raised
+    px(g, 10, armY - 3, 1, 1, pal.skin);
+    px(g, 1, armY + 5, 1, 1, pal.skin);
+  } else {
+    px(g, 1, armY, 1, 5, pal.shirt);
+    px(g, 10, armY + (lift ? -1 : 0), 1, 5, pal.shirt);
+    px(g, 1, armY + 5, 1, 1, pal.skin);
+    px(g, 10, armY + 5 + (lift ? -1 : 0), 1, 1, pal.skin);
+  }
 
   // head
   px(g, 3, top, 6, 6, pal.skin);
@@ -176,15 +216,15 @@ function drawCharacter(g, pal, dir, step, sit) {
 }
 
 const spriteCache = new Map();
-function sprite(id, principal, dir, step, sit) {
-  const key = `${id}|${dir}|${step}|${sit ? 1 : 0}`;
+function sprite(id, principal, dir, step, sit, act) {
+  const key = `${id}|${dir}|${step}|${sit ? 1 : 0}|${act}`;
   let found = spriteCache.get(key);
   if (found) return found;
   const c = document.createElement('canvas');
   c.width = SW; c.height = SH;
   const g = c.getContext('2d');
   g.imageSmoothingEnabled = false;
-  drawCharacter(g, paletteFor(id, principal), dir, step, sit);
+  drawCharacter(g, paletteFor(id, principal), dir, step, sit, act);
   spriteCache.set(key, c);
   return c;
 }
@@ -293,12 +333,30 @@ async function poll() {
       if (!state.actors.some(a => a.id === id)) actors.delete(id);
     }
     drawRoster(state.actors);
+    drawFeed(state.feed || []);
   } catch (err) { /* a missed poll leaves the floor a moment stale, not wrong */ }
 }
 
 function escapeHtml(s) {
   return String(s).replace(/[&<>"']/g, c =>
     ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+const TINT = {
+  typing: '#E3C46B', reading: '#22D3EE', testing: '#4ADE80',
+  shipping: '#A78BFA', talking: '#F0A868', reporting: '#93C5FD', working: '#8A93A8',
+};
+
+function drawFeed(items) {
+  document.getElementById('feed').innerHTML = items.length ? items.map(i => `
+    <div class="line">
+      <time>${escapeHtml(i.clock)}</time>
+      <span class="dot" style="background:${TINT[i.activity] || '#8A93A8'}"></span>
+      <span class="txt"><b>${escapeHtml(i.actor)}</b> · ${escapeHtml(i.label)} · ${
+        escapeHtml(i.detail)}</span>
+    </div>`).join('')
+    : '<div class="line"><span></span><span></span><span class="txt">' +
+      'Nothing yet — the feed fills as records arrive.</span></div>';
 }
 
 function drawRoster(list) {
@@ -308,7 +366,8 @@ function drawRoster(list) {
       <canvas width="${SW}" height="${SH}"></canvas>
       <span>
         <div class="name">${escapeHtml(a.name)}</div>
-        <div class="meta"><em>${a.wing}</em> · ${a.state_label}${
+        <div class="meta"><em>${a.wing}</em> · ${
+          a.real ? escapeHtml(a.activity_label) : a.state_label}${
           a.detail ? ' · ' + escapeHtml(a.detail) : ''}</div>
       </span>
       <span class="count">${a.events}</span>
@@ -320,7 +379,7 @@ function drawRoster(list) {
     const a = list[index];
     const g = row.querySelector('canvas').getContext('2d');
     g.imageSmoothingEnabled = false;
-    g.drawImage(sprite(a.id, a.principal, 'down', 0, false), 0, 0);
+    g.drawImage(sprite(a.id, a.principal, 'down', 0, false, 'idle'), 0, 0);
   });
 }
 
@@ -345,8 +404,10 @@ function draw() {
     a.y += (a.data.fy - a.y) * 0.28;
 
     const moving = a.data.moving;
-    if (moving) a.phase = (a.phase + 0.28) % 4;
-    const step = moving ? Math.floor(a.phase) : 0;
+    const act = moving ? 'walking' : a.data.activity;
+    // Typing animates while standing still, so the phase advances for it too.
+    if (moving || act === 'typing') a.phase = (a.phase + (moving ? 0.28 : 0.14)) % 4;
+    const step = moving ? Math.floor(a.phase) : (act === 'typing' ? Math.floor(a.phase) : 0);
     const sit = a.data.at_desk && !moving;
 
     // Idle characters breathe. Without it a still office looks like a freeze,
@@ -361,7 +422,8 @@ function draw() {
     ctx.fillStyle = 'rgba(0,0,0,0.35)';
     ctx.fillRect(sx + 2, sy + SH - 1, SW - 4, 1);
 
-    ctx.drawImage(sprite(a.data.id, a.data.principal, a.data.facing, step, sit), sx, sy);
+    ctx.drawImage(
+      sprite(a.data.id, a.data.principal, a.data.facing, step, sit, act), sx, sy);
 
     if (a.data.real) drawStatusBubble(ctx, sx, sy, a.data);
     // Nameplates only for people doing something: with everyone labelled, a
@@ -370,22 +432,48 @@ function draw() {
   }
 }
 
-// A bubble appears only while an actor is genuinely busy, and shows the tool
-// that put it there — the icon is a real record, not idle chatter.
-function drawStatusBubble(g, sx, sy, data) {
-  const bx = sx + SW - 2, by = sy - 8;
-  g.fillStyle = '#0B1220'; g.fillRect(bx, by, 10, 9);
-  g.fillStyle = '#C8A951'; g.fillRect(bx, by, 10, 1); g.fillRect(bx, by + 8, 10, 1);
-  g.fillRect(bx, by, 1, 9); g.fillRect(bx + 9, by, 1, 9);
+// A bubble appears only while an actor is genuinely busy, and its icon is the
+// activity the record produced — never idle chatter to fill the frame.
+const ACTIVITY_TINT = {
+  typing: '#E3C46B', reading: '#22D3EE', testing: '#4ADE80',
+  shipping: '#A78BFA', talking: '#F0A868', reporting: '#93C5FD', working: '#8A93A8',
+};
 
-  const d = (data.detail || '').toLowerCase();
-  let mark = '#E3C46B';
-  if (data.wing === 'QA' || d.startsWith('pytest') || d.startsWith('ruff')) mark = '#4ADE80';
-  else if (d.startsWith('git ')) mark = '#22D3EE';
-  g.fillStyle = mark;
-  const blink = Math.floor(tick / 12) % 2;
-  g.fillRect(bx + 3, by + 3, 4, 1);
-  if (blink) g.fillRect(bx + 3, by + 5, 4, 1);
+function drawStatusBubble(g, sx, sy, data) {
+  const bx = sx + SW - 2, by = sy - 9;
+  g.fillStyle = '#0B1220'; g.fillRect(bx, by, 11, 10);
+  g.fillStyle = '#243149';
+  g.fillRect(bx, by, 11, 1); g.fillRect(bx, by + 9, 11, 1);
+  g.fillRect(bx, by, 1, 10); g.fillRect(bx + 10, by, 1, 10);
+  g.fillRect(bx + 1, by + 10, 1, 1);            // bubble tail
+
+  const act = data.activity || 'working';
+  g.fillStyle = ACTIVITY_TINT[act] || '#8A93A8';
+  const blink = Math.floor(tick / 10) % 2;
+
+  if (act === 'typing') {                        // a pencil
+    g.fillRect(bx + 3, by + 6, 5, 1);
+    g.fillRect(bx + 4, by + 5, 4, 1); g.fillRect(bx + 6, by + 3, 2, 2);
+  } else if (act === 'reading') {                // a magnifier
+    g.fillRect(bx + 3, by + 2, 4, 1); g.fillRect(bx + 3, by + 5, 4, 1);
+    g.fillRect(bx + 2, by + 3, 1, 2); g.fillRect(bx + 7, by + 3, 1, 2);
+    g.fillRect(bx + 7, by + 6, 2, 2);
+  } else if (act === 'testing') {                // a tick
+    g.fillRect(bx + 3, by + 5, 1, 2); g.fillRect(bx + 4, by + 6, 1, 2);
+    g.fillRect(bx + 5, by + 4, 1, 2); g.fillRect(bx + 6, by + 2, 1, 2);
+  } else if (act === 'shipping') {               // an up arrow
+    g.fillRect(bx + 5, by + 2, 1, 6); g.fillRect(bx + 4, by + 3, 3, 1);
+    g.fillRect(bx + 3, by + 4, 5, 1);
+  } else if (act === 'talking') {                // speech dots
+    g.fillRect(bx + 3, by + 4, 1, 1);
+    if (blink) { g.fillRect(bx + 5, by + 4, 1, 1); g.fillRect(bx + 7, by + 4, 1, 1); }
+  } else if (act === 'reporting') {              // lines of text
+    g.fillRect(bx + 3, by + 3, 6, 1); g.fillRect(bx + 3, by + 5, 6, 1);
+    if (blink) g.fillRect(bx + 3, by + 7, 3, 1);
+  } else {
+    g.fillRect(bx + 4, by + 4, 3, 1);
+    if (blink) g.fillRect(bx + 4, by + 6, 3, 1);
+  }
 }
 
 function drawNameplate(g, sx, sy, data) {

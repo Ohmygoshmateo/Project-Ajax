@@ -224,29 +224,33 @@ def operations(commits: list[Commit], projects: list[Project]) -> Division:
     return division
 
 
-def asset_management(repo_summary: dict[str, str], last_active: datetime | None) -> Division:
-    """The Ajax trading system — the first pluggable project module."""
+def asset_management(
+    module_summary: dict[str, str], last_active: datetime | None
+) -> Division:
+    """The slot for a project module — a system HQ watches beyond agent activity.
+
+    The other five divisions are derived from transcripts and git, which every
+    workspace has. This one is deliberately generic: a project supplies its own
+    figures through a module, and until one does the division is empty and says
+    so rather than displaying a zeroed chart.
+    """
     division = Division(
         code="AST",
         name="Asset Management",
         korean="자산운용부",
-        mandate="The options swing-trade agent and its paper track record.",
-        status=_status(last_active, has_data=bool(repo_summary)),
+        mandate="Figures from an installed project module, if a project supplies one.",
+        status=_status(last_active, has_data=bool(module_summary)),
         last_active=last_active,
-        sources=["data_cache/ajax_trades.db", "reports/"],
+        sources=["project module"],
     )
-    if not repo_summary:
+    if not module_summary:
         division.notes.append(
-            "No trade log found. Run `ajax agent run-once` to populate this division."
+            "No project module installed — see hq/src/ajax_hq/sources/modules/."
         )
         return division
 
-    division.metrics = [(k, v) for k, v in repo_summary.items()][:4]
-    if "Sample" in repo_summary:
-        division.notes.append(
-            "Win rate is below the 20-trade floor and is not yet statistically meaningful."
-        )
-    division.notes.append("Paper trading only — the live gate is sealed by design.")
+    division.metrics = [(k, v) for k, v in module_summary.items()][:4]
+    division.notes.append("Supplied by a project module, not derived from transcripts.")
     return division
 
 
@@ -258,8 +262,8 @@ def build_all(
     commits: list[Commit],
     projects: list[Project],
     plans: list[Plan],
-    trading_summary: dict[str, str],
-    trading_last_active: datetime | None,
+    module_summary: dict[str, str] | None = None,
+    module_last_active: datetime | None = None,
 ) -> list[Division]:
     """The division registry. Appending a builder here adds a division."""
     return [
@@ -268,5 +272,5 @@ def build_all(
         engineering(sessions, agents, files),
         quality_assurance(sessions, agents),
         operations(commits, projects),
-        asset_management(trading_summary, trading_last_active),
+        asset_management(module_summary or {}, module_last_active),
     ]
