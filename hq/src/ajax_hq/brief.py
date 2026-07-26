@@ -449,11 +449,27 @@ def _stamp(value: datetime | None, fmt: str = "%m-%d %H:%M") -> str:
     return stamp.strftime(fmt) if stamp else "—"
 
 
-def _table(*columns: str) -> Table:
-    table = Table(box=None, pad_edge=False, header_style=f"bold {DIM}", expand=False)
-    for column in columns:
-        table.add_column(column, overflow="ellipsis", no_wrap=True)
-    return table
+def _table() -> Table:
+    return Table(box=None, pad_edge=False, header_style=f"bold {DIM}", expand=False)
+
+
+def _column(table: Table, header: str, *, width: int | None = None,
+            right: bool = False) -> None:
+    """Add a column that clips rather than wraps.
+
+    Widths are capped on the free-text columns only. Left to itself Rich shares
+    the deficit across every column when the terminal is narrow, which turns the
+    short factual ones — a duration, a tool count — into ellipses while the long
+    prose column keeps most of the space. Clipping the prose instead keeps the
+    figures readable, which is what the brief is for.
+    """
+    table.add_column(
+        header,
+        max_width=width,
+        justify="right" if right else "left",
+        overflow="ellipsis",
+        no_wrap=True,
+    )
 
 
 def _note(console: Console, text: str) -> None:
@@ -528,7 +544,13 @@ def _render_agents(brief: Brief, console: Console) -> None:
     if not brief.agents:
         return
     console.print(Text("  Agents dispatched", style="bold"))
-    table = _table("", "Task", "Type", "Dispatched", "Elapsed", "Tools", "Output")
+    table = _table()
+    _column(table, "", width=2)
+    _column(table, "Task", width=38)
+    _column(table, "Type", width=15)
+    _column(table, "Dispatched")
+    for header in ("Elapsed", "Tools", "Output"):
+        _column(table, header, right=True)
     for agent in brief.agents:
         table.add_row(
             "  ",
@@ -556,7 +578,10 @@ def _render_files(brief: Brief, console: Console) -> None:
     )
     console.print(summary)
 
-    table = _table("", "Path", "Touches (lifetime)")
+    table = _table()
+    _column(table, "", width=2)
+    _column(table, "Path", width=70)
+    _column(table, "Touches (lifetime)", right=True)
     for path, touches in brief.files.top:
         table.add_row("  ", path, str(touches))
     console.print(table)
@@ -567,7 +592,11 @@ def _render_commits(brief: Brief, console: Console) -> None:
     if not brief.commits:
         return
     console.print(Text("  Commits landed", style="bold"))
-    table = _table("", "SHA", "Subject", "When")
+    table = _table()
+    _column(table, "", width=2)
+    _column(table, "SHA")
+    _column(table, "Subject", width=62)
+    _column(table, "When")
     for commit in brief.commits:
         table.add_row("  ", commit.short_sha, commit.subject, _stamp(commit.timestamp))
     console.print(table)

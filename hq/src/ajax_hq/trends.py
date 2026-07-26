@@ -83,8 +83,12 @@ class Capture:
     live: bool = False
 
     @property
+    def day(self) -> str:
+        return self.captured_at.strftime("%Y-%m-%d")
+
+    @property
     def label(self) -> str:
-        """Date and time. Two captures can share a date, so the clock stays."""
+        """Date and time — two captures can share a date, so the clock stays."""
         return self.captured_at.strftime("%Y-%m-%d %H:%M")
 
     def value(self, metric: str) -> int:
@@ -380,24 +384,35 @@ def render(trends: Trends, console: Console | None = None) -> None:
 
 def _render_table(trends: Trends, console: Console) -> None:
     table = Table(title="Captures — every figure is cumulative", title_style=DIM)
-    table.add_column("Captured", no_wrap=True)
-    table.add_column("Since prev.", justify="right", no_wrap=True)
+    # Minimum widths on the two identity columns: in a narrow terminal Rich
+    # shrinks whatever it can, and an ellipsised capture time or gap would erase
+    # the evidence that captures are irregular. A figure squeezed instead is
+    # visibly truncated rather than quietly wrong.
+    table.add_column("Captured", no_wrap=True, min_width=10)
+    table.add_column("Gap", justify="right", no_wrap=True, min_width=3)
     for _, header in METRICS:
         table.add_column(header, justify="right", no_wrap=True)
 
     deltas = {metric: trends.deltas(metric) for metric, _ in METRICS}
     gaps = trends.gaps
 
+    # The clock is only printed where a date is ambiguous. Rich would otherwise
+    # spend six columns per row on it and start ellipsising the figures, and a
+    # truncated number is worse than an unprinted hour.
+    days = [c.day for c in trends.captures]
+
     for index, capture in enumerate(trends.captures):
-        label = Text(capture.label, style=GOLD if capture.live else "white")
+        ambiguous = days.count(capture.day) > 1
+        label = Text(capture.label if ambiguous else capture.day,
+                     style=GOLD if capture.live else "white")
         if capture.live:
-            label.append("  live", style=FAINT)
+            label.append(" live", style=FAINT)
         cells = [label, Text(_gap_label(gaps[index]), style=DIM)]
         for metric, _ in METRICS:
             cell = Text(f"{capture.value(metric):,}", style="white")
             delta = deltas[metric][index]
             if delta is not None:
-                cell.append(f"  +{delta:,}", style=FAINT)
+                cell.append(f" +{delta:,}", style=FAINT)
             cells.append(cell)
         table.add_row(*cells)
 
@@ -433,7 +448,7 @@ def _render_notes(trends: Trends, console: Console) -> None:
     ))
     if trends.enough:
         console.print(Text(
-            "  Bars are evenly spaced; the real intervals are in the Since prev. column.",
+            "  Bars are evenly spaced; the real intervals are in the Gap column.",
             style=FAINT,
         ))
     console.print(Text(

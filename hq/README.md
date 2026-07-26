@@ -9,7 +9,10 @@ floor animation — it is labelled as decoration.
 
 ```bash
 pip install -e hq
+ajax-hq brief      # what the agents did since yesterday
 ajax-hq agents     # every agent that has run, in the terminal
+ajax-hq lineage    # reporting lines — who dispatched whom
+ajax-hq trends     # how the figures have moved across snapshots
 ajax-hq floor      # the virtual office floor, one desk per agent
 ajax-hq play       # the floor as a live game — agents roam until work arrives
 ajax-hq play --web # the same simulation, on a canvas at 127.0.0.1:8788
@@ -161,7 +164,7 @@ interface would publish everything those agents were ever asked to do.
 cd hq && pytest -q
 ```
 
-230 tests, network-free. Weighted toward the things that would be quietly wrong
+352 tests, network-free. Weighted toward the things that would be quietly wrong
 otherwise: transcript parsing against malformed, truncated, and unknown-type
 records; agent extraction and linkage; division status derivation at the window
 boundary; snapshot privacy; HTML self-containment (no external resource refs);

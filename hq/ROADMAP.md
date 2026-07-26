@@ -13,27 +13,29 @@ on this list however good it would look on a dashboard.
 
 ## In flight
 
-- **`ajax-hq brief`** — a daily digest: what agents did since yesterday, what
-  landed, what was verified. A quiet day must report a quiet day.
-- **`ajax-hq lineage`** — the org chart. Which session dispatched which agent,
-  built from the link already in the data. Agents whose parent is unknown are
-  grouped as unattributed, never guessed at.
-- **`ajax-hq trends`** — the committed snapshot archive read as a series rather
-  than as a set of stills. Fewer than two captures reports "not enough history"
-  rather than drawing a line.
-
-## Next
-
 - **Watch mode** — `ajax-hq agents --watch` and a live-refreshing roster, so a
   running session can be followed without re-running commands.
 - **Cross-project view** — HQ currently walks one workspace root. Multiple roots,
   with per-project division figures.
-- **Session detail page** — a single session's full arc: turns, decisions,
-  agents dispatched, files touched, in one view.
+- **Per-agent file attribution** — every agent currently places in R&D or QA
+  because subagents write through a shared tree and their `Write`/`Edit` calls
+  are not being credited to them individually. Engineering has never had staff.
+  Either the attribution is recoverable from the subagent transcripts or it is
+  not; find out, and if it is not, say so on the floor rather than leaving the
+  wing quietly empty.
+
+## Next
+
+- **Session detail** — a single session's full arc: turns, decisions, agents
+  dispatched, files touched, in one view.
 - **Cost accounting** — token spend per session and per model over time, from the
   fields that are actually sound. Agent-level output tokens stay excluded until
   the vendor field becomes trustworthy.
 - **Search** — across transcripts, locally. Never leaves the machine.
+- **Snapshot on a schedule** — `trends` is only as good as the archive, and the
+  archive currently grows when someone remembers to run `ajax-hq snapshot`. That
+  irregularity is disclosed in the output, but regular captures would make the
+  series worth more.
 
 ## Later
 

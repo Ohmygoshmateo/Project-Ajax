@@ -161,6 +161,39 @@ def floor(
 
 
 @app.command()
+def brief(
+    hours: float = typer.Option(24.0, help="Window to report on, in hours."),
+    claude_home: Path = typer.Option(None, help="Override ~/.claude."),
+    workspace: Path = typer.Option(None, help="Workspace root to scan for repos."),
+    no_history: bool = typer.Option(False, help="Ignore committed snapshots."),
+) -> None:
+    """What the agents did since yesterday. A quiet day reports a quiet day."""
+    from ajax_hq.brief import build as build_brief
+    from ajax_hq.brief import render as render_brief
+
+    snapshot = _build(claude_home, workspace, not no_history)
+    render_brief(build_brief(snapshot, window_hours=hours), console)
+
+
+@app.command()
+def trends(
+    directory: Path = typer.Option(None, help="History directory."),
+    claude_home: Path = typer.Option(None, help="Override ~/.claude."),
+    workspace: Path = typer.Option(None, help="Workspace root to scan for repos."),
+    no_live: bool = typer.Option(False, help="Archived captures only, excluding now."),
+) -> None:
+    """How the figures have moved across committed snapshots.
+
+    Fewer than two captures reports that, rather than drawing a line.
+    """
+    from ajax_hq.trends import render as render_trends
+    from ajax_hq.trends import series
+
+    live = None if no_live else collect(claude_home=claude_home, workspace=workspace)
+    render_trends(series(history_dir=directory, live=live), console)
+
+
+@app.command()
 def lineage(
     claude_home: Path = typer.Option(None, help="Override ~/.claude."),
     workspace: Path = typer.Option(None, help="Workspace root to scan for repos."),

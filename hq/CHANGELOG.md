@@ -10,6 +10,33 @@ cost — a change that traded something away says so.
 
 ## 2026-07-26
 
+**Three new commands, built by three agents in parallel.**
+
+`ajax-hq brief` — what happened since yesterday: agents dispatched, files
+touched, commits landed, verification runs, tool split, busiest division. The
+window is half-open, so consecutive daily briefs tile exactly and no record is
+double-counted or lost. A quiet day prints that it was quiet; the window is
+never widened to find something to show. File touch counts are lifetime and
+labelled as such, because `BuiltFile` records only first and last seen and a
+within-window count cannot be derived from that.
+
+`ajax-hq lineage` — the org chart, read from each subagent's own record of its
+caller. A parent is never invented: no timestamp heuristic, and no "only one
+session, so it must be that one" shortcut. Agents with no usable caller are
+listed unattributed with the reason printed, so a gap costs a line and never a
+record.
+
+`ajax-hq trends` — the committed archive read as a series. Under two captures it
+refuses to draw anything and says why. Deltas are floored at zero and a floored
+step is reported as a merge artefact rather than shown as work undone; the net
+sums the floored steps, so a refused negative cannot re-enter the total.
+Captures are irregular and the output says so rather than implying a schedule.
+
+**Session dispatch lists are archived.** Snapshots recorded which session an
+agent belonged to but not which agents a session dispatched, so lineage's
+cross-check was structurally dead for restored records. Ids only — the privacy
+guarantee is unchanged and still asserted.
+
 **Live activity feed and per-activity animation.** Each character on the floor
 now carries an activity derived from the record that produced it — editing,
 researching, running checks, shipping, in conversation, writing up — shown in
