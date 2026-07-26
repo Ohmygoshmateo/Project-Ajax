@@ -7,9 +7,20 @@ from pathlib import Path
 
 import pytest
 
+from ajax_hq.behaviour import wing_for
 from ajax_hq.model import SchemaHealth, Status
 from ajax_hq.sources import transcripts
-from tests.conftest import AGENT_A, AGENT_B, SECRET_PROMPT, SECRET_REPORT, SESSION_ID
+from tests.conftest import (
+    AGENT_A,
+    AGENT_B,
+    AGENT_ONLY_FILE,
+    BUILDER,
+    SECRET_PROMPT,
+    SECRET_REPORT,
+    SESSION_ID,
+    SHARED_FILE,
+    SHARED_SESSION_ID,
+)
 
 
 class TestTimestamps:
@@ -194,3 +205,103 @@ class TestFileAttribution:
         entry = files["/home/user/Demo/a.py"]
         assert entry.first_seen is not None and entry.last_seen is not None
         assert entry.last_seen > entry.first_seen
+
+    def test_a_file_only_a_subagent_built_is_in_the_inventory(self, claude_home: Path):
+        """The regression this class exists for.
+
+        A subagent writes through the principal's tree but records the call only
+        in its own transcript, so a reader that walks session transcripts alone
+        reports the file as never having been built at all.
+        """
+        files = {f.path: f for f in transcripts.load(claude_home)[2]}
+        assert "/home/user/Demo/b.py" in files
+
+    def test_a_principal_built_file_credits_no_agent(self, claude_home: Path):
+        files = {f.path: f for f in transcripts.load(claude_home)[2]}
+        assert files["/home/user/Demo/a.py"].agent_ids == []
+        assert files["/home/user/Demo/a.py"].delegated is False
+
+    def test_a_delegated_file_names_the_agent_that_built_it(self, claude_home: Path):
+        files = {f.path: f for f in transcripts.load(claude_home)[2]}
+        entry = files["/home/user/Demo/b.py"]
+        assert entry.agent_ids == [AGENT_B]
+        assert entry.delegated is True
+
+
+class TestSharedTreeAttribution:
+    """Attribution when a session and a subagent build through the same tree."""
+
+    def test_agent_only_file_counts_every_call(self, shared_tree_home: Path):
+        files = {f.path: f for f in transcripts.load(shared_tree_home)[2]}
+        entry = files[AGENT_ONLY_FILE]
+        assert (entry.writes, entry.edits) == (1, 2)
+        assert entry.agent_ids == [BUILDER]
+
+    def test_a_shared_file_sums_both_parties_without_double_counting(
+        self, shared_tree_home: Path
+    ):
+        """1 write + 1 edit from the session, 1 edit from the agent — exactly.
+
+        The two record sets are disjoint, so summing is correct; this is the test
+        that fails if a subagent's calls are ever echoed into its session's
+        transcript and counted twice.
+        """
+        files = {f.path: f for f in transcripts.load(shared_tree_home)[2]}
+        entry = files[SHARED_FILE]
+        assert (entry.writes, entry.edits) == (1, 2)
+        assert entry.touches == 3
+
+    def test_a_shared_file_credits_only_the_subagent_that_touched_it(
+        self, shared_tree_home: Path
+    ):
+        """agent_ids answers "which agents", not "who did the most"."""
+        files = {f.path: f for f in transcripts.load(shared_tree_home)[2]}
+        assert files[SHARED_FILE].agent_ids == [BUILDER]
+
+    def test_the_agent_still_lists_the_files_itself(self, shared_tree_home: Path):
+        agents = {a.agent_id: a for a in transcripts.load(shared_tree_home)[1]}
+        assert sorted(agents[BUILDER].files_touched) == sorted([AGENT_ONLY_FILE, SHARED_FILE])
+
+    def test_the_builder_is_seated_in_engineering(self, shared_tree_home: Path):
+        """The placement the roadmap suspected was unreachable."""
+        agents = {a.agent_id: a for a in transcripts.load(shared_tree_home)[1]}
+        assert wing_for(agents[BUILDER]) == "ENG"
+
+    def test_a_file_path_is_credited_to_the_declared_agent_id(self, shared_tree_home: Path):
+        """The id in the record wins over the one in the filename.
+
+        A declared agentId can arrive on any record, so credit is assigned after
+        the whole transcript is read rather than as each call is seen.
+        """
+        subagents = (shared_tree_home / "projects" / "-home-user-Demo"
+                     / SHARED_SESSION_ID / "subagents")
+        (subagents / f"agent-{BUILDER}.jsonl").rename(subagents / "agent-stale-name.jsonl")
+
+        files = {f.path: f for f in transcripts.load(shared_tree_home)[2]}
+        assert files[AGENT_ONLY_FILE].agent_ids == [BUILDER]
+
+
+class TestUnattributableDispatches:
+    """The one case where per-agent attribution genuinely cannot be derived."""
+
+    def test_a_dispatch_without_a_transcript_is_recorded(self, claude_home: Path):
+        subagents = claude_home / "projects" / "-home-user-Demo" / SESSION_ID / "subagents"
+        (subagents / f"agent-{AGENT_A}.jsonl").unlink()
+
+        health = transcripts.load(claude_home)[3]
+        assert health.agents_without_transcript == [AGENT_A]
+
+    def test_the_gap_is_disclosed_in_words(self, claude_home: Path):
+        subagents = claude_home / "projects" / "-home-user-Demo" / SESSION_ID / "subagents"
+        (subagents / f"agent-{AGENT_A}.jsonl").unlink()
+
+        note = transcripts.load(claude_home)[3].attribution_note
+        assert note is not None
+        assert "unavailable" in note
+        assert "no transcript" in note
+
+    def test_no_note_when_every_agent_has_a_transcript(self, claude_home: Path):
+        """The disclosure is conditional on a real gap, not boilerplate."""
+        health = transcripts.load(claude_home)[3]
+        assert health.agents_without_transcript == []
+        assert health.attribution_note is None

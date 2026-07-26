@@ -219,6 +219,25 @@ class TestVacancy:
         wing.desks.append(floor.Desk("n", "k", Status.COMPLETED, "1s", 1, "1 out", "t"))
         assert wing.occupancy_label == "1 desk"
 
+    def test_an_empty_engineering_wing_discloses_an_attribution_gap(self):
+        """An empty ENG wing must not read as settled when it might be an artefact."""
+        divisions = [Division(code="ENG", name="Engineering", korean="엔지니어링부",
+                              mandate="", metrics=[("Build calls", "93")])]
+        reason = floor._vacancy_reason("ENG", divisions, unattributed=2)
+        assert "cannot be attributed" in reason
+        assert "empty by measurement rather than in fact" in reason
+
+    def test_no_caveat_when_every_agent_has_a_transcript(self):
+        divisions = [Division(code="ENG", name="Engineering", korean="엔지니어링부",
+                              mandate="", metrics=[("Build calls", "93")])]
+        assert "Caveat" not in floor._vacancy_reason("ENG", divisions, unattributed=0)
+
+    def test_the_caveat_is_only_for_engineering(self):
+        """Only ENG depends on per-agent file attribution."""
+        divisions = [Division(code="OPS", name="Operations", korean="운영부",
+                              mandate="", metrics=[("Commits", "4")])]
+        assert "Caveat" not in floor._vacancy_reason("OPS", divisions, unattributed=2)
+
 
 class TestRendering:
     def test_all_six_wings_appear(self, snapshot):
@@ -235,6 +254,18 @@ class TestRendering:
 
     def test_states_the_effort_measure(self, snapshot):
         assert "measured text emitted" in render_to_text(snapshot)
+
+    def test_states_where_a_desks_file_count_comes_from(self, snapshot):
+        """A reader must not take the count for the whole session's output."""
+        assert "that agent's own Write/Edit record" in render_to_text(snapshot)
+
+    def test_an_attribution_gap_is_printed(self, snapshot):
+        snapshot.schema.agents_without_transcript = ["ghost1", "ghost2"]
+        text = render_to_text(snapshot)
+        assert "Per-agent file attribution is unavailable for 2" in text
+
+    def test_nothing_is_printed_without_a_gap(self, snapshot):
+        assert "Per-agent file attribution is unavailable" not in render_to_text(snapshot)
 
     def test_long_names_are_clipped_not_wrapped(self):
         long = "A" * 200
