@@ -69,8 +69,16 @@ def state_payload(sim: Simulation) -> dict[str, Any]:
                 "name": actor.name,
                 "kind": actor.kind,
                 "wing": actor.home_wing,
+                # Whole-cell position for anything that reasons about the world,
+                # fractional for drawing — a character mid-stride is between
+                # tiles on screen and on exactly one tile in the simulation.
                 "x": actor.position[0],
                 "y": actor.position[1],
+                "fx": round(actor.visual_position[0], 3),
+                "fy": round(actor.visual_position[1], 3),
+                "facing": actor.facing,
+                "moving": actor.moving,
+                "at_desk": actor.at_desk,
                 "state": actor.state.value,
                 "state_label": STATE_LABEL[actor.state],
                 "real": actor.state.is_real_activity,

@@ -8,6 +8,7 @@ overhead that shows up as flicker.
 from __future__ import annotations
 
 import time
+import zlib
 
 from rich.console import Console, Group
 from rich.live import Live
@@ -52,9 +53,41 @@ STATE_LABEL = {
 }
 
 
+# A terminal cannot draw a sprite, so identity is carried by letter and colour
+# instead: the same agent is the same letter in the same colour every frame, and
+# the browser gives that agent a character in a matching palette slot.
+ACTOR_COLOURS = (
+    "cyan", "magenta", "green", "yellow", "blue", "red",
+    "bright_cyan", "bright_magenta", "bright_green", "bright_blue",
+)
+
+
 def _initial(actor: Actor, index: int) -> str:
     """A per-actor letter, so individuals are trackable across frames."""
     return "@" if actor.principal else chr(ord("a") + index % 26)
+
+
+def _actor_colour(actor: Actor) -> str:
+    """Stable across runs — ``hash()`` is salted per process, ``crc32`` is not.
+
+    An agent that changed colour every time you launched the floor would defeat
+    the point of colouring it at all.
+    """
+    if actor.principal:
+        return GOLD
+    return ACTOR_COLOURS[zlib.crc32(actor.actor_id.encode()) % len(ACTOR_COLOURS)]
+
+
+def _walk_glyph(actor: Actor, letter: str, phase: int) -> str:
+    """Alternate case on alternate steps — a two-frame walk cycle.
+
+    Deliberately not a fancier glyph set: block and arrow characters fall back
+    inconsistently across terminal fonts, and a character that renders as a
+    replacement box is worse than one that simply changes case.
+    """
+    if not actor.moving:
+        return letter
+    return letter.upper() if phase else letter
 
 
 def render_map(sim: Simulation) -> Text:
@@ -62,11 +95,12 @@ def render_map(sim: Simulation) -> Text:
     grid = [[TILE_GLYPH[world.tiles[y][x]] for x in range(world.width)]
             for y in range(world.height)]
 
+    phase = int(sim.clock * 5) % 2
     for index, actor in enumerate(sorted(sim.floor.actors.values(), key=lambda a: a.actor_id)):
         x, y = actor.position
         if 0 <= x < world.width and 0 <= y < world.height:
-            _, colour = STATE_GLYPH[actor.state]
-            grid[y][x] = (_initial(actor, index), f"bold {colour}")
+            letter = _walk_glyph(actor, _initial(actor, index), phase)
+            grid[y][x] = (letter, f"bold {_actor_colour(actor)}")
 
     # Wing names are written into the top wall of each room, so they cost no
     # extra rows and can never overlap an actor.
@@ -91,9 +125,9 @@ def render_roster(sim: Simulation) -> Table:
         table.add_column(column, overflow="ellipsis", no_wrap=True)
 
     for index, actor in enumerate(sorted(sim.floor.actors.values(), key=lambda a: a.actor_id)):
-        glyph, colour = STATE_GLYPH[actor.state]
+        _, colour = STATE_GLYPH[actor.state]
         table.add_row(
-            Text(_initial(actor, index), style=f"bold {colour}"),
+            Text(_initial(actor, index), style=f"bold {_actor_colour(actor)}"),
             Text(actor.name[:26], style="bold" if actor.principal else ""),
             actor.home_wing,
             Text(STATE_LABEL[actor.state], style=colour),

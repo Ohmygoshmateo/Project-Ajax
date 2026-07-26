@@ -8,13 +8,20 @@ Layout is fixed rather than generated. There are exactly six divisions and they
 do not change, so a procedural floor plan would add variance with nothing to
 gain from it.
 
-    ┌────────┐┌────────┐┌────────┐
-    │  EXO   ││  RND   ││  ENG   │      top row, doors on the south wall
-    └───┐┌───┘└───┐┌───┘└───┐┌───┘
-    ═══════════ corridor ═══════════
-    ┌───┘└───┐┌───┘└───┐┌───┘└───┐
-    │  QA    ││  OPS   ││  AST   │      bottom row, doors on the north wall
-    └────────┘└────────┘└────────┘
+    ┌────────┐ ║ ┌────────┐
+    │  EXO   ├─╫─┤  RND   │
+    └────────┘ ║ └────────┘
+    ┌────────┐ ║ ┌────────┐
+    │  ENG   ├─╫─┤  QA    │     a corridor spine, every wing opening onto it
+    └────────┘ ║ └────────┘
+    ┌────────┐ ║ ┌────────┐
+    │  OPS   ├─╫─┤  AST   │
+    └────────┘ ║ └────────┘
+
+Two columns rather than three: at three the building was over three times wider
+than it was tall, which left characters a few pixels high once the floor was
+scaled to fit a window. This shape suits both a canvas and an 80-column
+terminal.
 
 Every room opens onto the one corridor, so any desk is reachable from any other
 desk. That is asserted in the tests: an unreachable desk would strand an actor
@@ -27,13 +34,13 @@ from collections import deque
 from dataclasses import dataclass, field
 from enum import Enum
 
-ROOM_W = 20
-ROOM_H = 8
-CORRIDOR_H = 2
+ROOM_W = 16
+ROOM_H = 9
+CORRIDOR_W = 3
 
 # Room interiors are inset by one cell of wall on each side.
-DESK_COLUMNS = (3, 7, 11, 15)
-DESK_ROWS = (2, 4)
+DESK_COLUMNS = (3, 7, 11)
+DESK_ROWS = (2, 5)
 
 
 class Tile(str, Enum):
@@ -98,26 +105,26 @@ class World:
     height: int
     tiles: list[list[Tile]] = field(default_factory=list)
     rooms: dict[str, Room] = field(default_factory=dict)
-    corridor_y: int = 0
+    corridor_x: int = 0
 
     # ------------------------------------------------------------ construction
 
     @classmethod
     def build(cls) -> World:
-        width = ROOM_W * 3
-        height = ROOM_H * 2 + CORRIDOR_H
+        width = ROOM_W * 2 + CORRIDOR_W
+        height = ROOM_H * 3
         world = cls(width=width, height=height)
         world.tiles = [[Tile.FLOOR for _ in range(width)] for _ in range(height)]
-        world.corridor_y = ROOM_H
+        world.corridor_x = ROOM_W
 
         for index, (code, name, korean) in enumerate(ROOM_SPECS):
-            column = index % 3
-            row = index // 3
-            x = column * ROOM_W
-            y = 0 if row == 0 else ROOM_H + CORRIDOR_H
-            # Top-row rooms open south onto the corridor; bottom-row rooms north.
-            door_y = y + ROOM_H - 1 if row == 0 else y
-            door = (x + ROOM_W // 2, door_y)
+            column = index % 2
+            row = index // 2
+            x = 0 if column == 0 else ROOM_W + CORRIDOR_W
+            y = row * ROOM_H
+            # Left-column rooms open east onto the spine; right-column rooms west.
+            door_x = x + ROOM_W - 1 if column == 0 else x
+            door = (door_x, y + ROOM_H // 2)
             desks = tuple(
                 (x + dx, y + dy) for dy in DESK_ROWS for dx in DESK_COLUMNS
             )
@@ -159,8 +166,8 @@ class World:
     def corridor_cells(self) -> list[Point]:
         return [
             (x, y)
-            for y in range(self.corridor_y, self.corridor_y + CORRIDOR_H)
-            for x in range(self.width)
+            for x in range(self.corridor_x, self.corridor_x + CORRIDOR_W)
+            for y in range(self.height)
             if self.walkable((x, y))
         ]
 

@@ -367,6 +367,33 @@ class TestRendering:
         Console(file=buffer, width=60).print(render_frame(sim))
         assert buffer.getvalue()
 
+    def test_actor_colour_is_stable_across_runs(self, sim):
+        """A character that changed colour every launch would not be trackable."""
+        from ajax_hq.game.tui import ACTOR_COLOURS, GOLD, _actor_colour
+
+        actor = next(a for a in sim.floor.actors.values() if not a.principal)
+        # crc32, not hash(): the latter is salted per process, so this value
+        # would differ between runs.
+        assert _actor_colour(actor) in ACTOR_COLOURS
+        assert _actor_colour(actor) == _actor_colour(actor)
+
+        principal = next(a for a in sim.floor.actors.values() if a.principal)
+        assert _actor_colour(principal) == GOLD
+
+    def test_a_walking_character_animates(self, sim):
+        from ajax_hq.game.tui import _walk_glyph
+
+        actor = next(iter(sim.floor.actors.values()))
+        actor.path = [(1, 1)]
+        assert _walk_glyph(actor, "a", 0) != _walk_glyph(actor, "a", 1)
+
+    def test_a_standing_character_does_not(self, sim):
+        from ajax_hq.game.tui import _walk_glyph
+
+        actor = next(iter(sim.floor.actors.values()))
+        actor.path = []
+        assert _walk_glyph(actor, "a", 0) == _walk_glyph(actor, "a", 1) == "a"
+
 
 class TestWebPayloads:
     def test_world_payload_is_json_serializable(self, sim):

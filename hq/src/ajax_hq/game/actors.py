@@ -67,6 +67,7 @@ class Actor:
     # Set when an actor was created by an event rather than from the snapshot —
     # it appeared while the game was running.
     walked_in: bool = False
+    _last_facing: str = "down"
 
     @property
     def at_desk(self) -> bool:
@@ -75,6 +76,42 @@ class Actor:
     @property
     def label(self) -> str:
         return self.name
+
+    @property
+    def moving(self) -> bool:
+        return bool(self.path)
+
+    @property
+    def facing(self) -> str:
+        """Which way the character looks — the direction of its next step.
+
+        A stationary actor keeps facing wherever it last walked, except at its
+        desk, where it faces up: it is sitting at the desk, working at it.
+        """
+        if not self.path:
+            return "up" if self.at_desk else self._last_facing
+        nx, ny = self.path[0]
+        x, y = self.position
+        if nx != x:
+            return "right" if nx > x else "left"
+        if ny != y:
+            return "down" if ny > y else "up"
+        return self._last_facing
+
+    @property
+    def visual_position(self) -> tuple[float, float]:
+        """Position in fractional cells, part-way into the current step.
+
+        Sent to the renderers instead of the raw cell so a character glides
+        between tiles rather than teleporting once per step. The simulation
+        itself stays on whole cells — this is presentation only.
+        """
+        x, y = self.position
+        if not self.path:
+            return (float(x), float(y))
+        nx, ny = self.path[0]
+        t = min(1.0, max(0.0, self.step_progress))
+        return (x + (nx - x) * t, y + (ny - y) * t)
 
     def send_to(self, world: World, target: Point, state: ActorState) -> None:
         route = world.path(self.position, target)
@@ -91,11 +128,15 @@ class Actor:
     def advance(self, dt: float) -> None:
         """Move along the current path by ``dt`` seconds of travel."""
         if not self.path:
+            self.step_progress = 0.0
             return
+        self._last_facing = self.facing
         self.step_progress += dt * WALK_SPEED
         while self.step_progress >= 1.0 and self.path:
             self.step_progress -= 1.0
             self.position = self.path.pop(0)
+        if not self.path:
+            self.step_progress = 0.0
 
 
 def _desk_allocator(world: World) -> dict[str, list[Point]]:
