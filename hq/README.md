@@ -4,7 +4,8 @@ A read-only operations centre for tracking agents and what they build, styled as
 a Korean conglomerate's headquarters.
 
 Every figure it shows was measured from local records. Nothing is simulated,
-there are no idle animations, and no panel invents state to look busy.
+no panel invents state to look busy, and where something *is* decoration — the
+floor animation — it is labelled as decoration.
 
 ```bash
 pip install -e hq
@@ -32,7 +33,7 @@ Claude Code writes complete transcripts to disk, and HQ reads them:
 | `~/.claude/plans/*.md` | Planned work |
 | `git log` / `git status` | Commits, churn, branches, uncommitted state |
 | Workspace walk | Projects, language, LOC, test counts |
-| `data_cache/ajax_trades.db` | Ajax trading state (optional module) |
+| a project module under `sources/modules/` | figures a project supplies itself |
 
 **These are undocumented internals.** The layout above was observed on client
 2.1.220 and can change without notice. Parsing is deliberately paranoid: every
@@ -77,7 +78,7 @@ derived from actual tool usage.
 | `ENG` | Engineering · 엔지니어링부 | Write and Edit calls → files built |
 | `QA` | Quality Assurance · 품질관리부 | Test and lint invocations |
 | `OPS` | Operations · 운영부 | Commits, branches, repository state |
-| `AST` | Asset Management · 자산운용부 | The Ajax trading system (optional) |
+| `AST` | Asset Management · 자산운용부 | An installed project module, if any |
 
 Status is `NEVER ACTIVE` / `ACTIVE` / `IDLE` / `DEGRADED`, derived from real
 timestamps. A division with no history says so instead of showing zeros.
@@ -160,7 +161,7 @@ interface would publish everything those agents were ever asked to do.
 cd hq && pytest -q
 ```
 
-208 tests, network-free. Weighted toward the things that would be quietly wrong
+230 tests, network-free. Weighted toward the things that would be quietly wrong
 otherwise: transcript parsing against malformed, truncated, and unknown-type
 records; agent extraction and linkage; division status derivation at the window
 boundary; snapshot privacy; HTML self-containment (no external resource refs);

@@ -8,13 +8,5 @@ htmlcov/
 .venv/
 venv/
 
-.env
-config/local_override.yaml
-config/tuned.yaml
-
-data_cache/*
-!data_cache/.gitkeep
-reports/*
-!reports/.gitkeep
-logs/*
-!logs/.gitkeep
+# Generated dashboard output. The committed record lives in hq/data/history/.
+hq/out/

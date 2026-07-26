@@ -132,6 +132,95 @@ class TestEventClassification:
         assert "\n" not in event.detail
 
 
+class TestActivities:
+    """What an actor is *doing*, as opposed to where it is."""
+
+    @pytest.mark.parametrize(
+        ("tool", "command", "activity"),
+        [
+            ("Write", None, "typing"),
+            ("Edit", None, "typing"),
+            ("Read", None, "reading"),
+            ("WebSearch", None, "reading"),
+            ("Agent", None, "talking"),
+            ("AskUserQuestion", None, "talking"),
+            ("Bash", "pytest -q", "testing"),
+            ("Bash", "git push", "shipping"),
+            ("Bash", "ls", "working"),
+            ("SomeFutureTool", None, "working"),
+        ],
+    )
+    def test_a_record_implies_an_activity(self, tool, command, activity):
+        assert events_mod.activity_for(tool, command) == activity
+
+    def test_emitting_text_is_writing_up(self):
+        record = {"type": "assistant",
+                  "message": {"content": [{"type": "text", "text": "the answer"}]}}
+        (event,) = events_mod.events_from_record(record, "a")
+        assert event.activity == "reporting"
+
+    def test_the_activity_stops_when_the_record_stops_being_recent(self, sim):
+        """An actor is never handed something plausible to look busy with."""
+        actor = next(iter(sim.floor.actors.values()))
+        sim._apply(events_mod.Event(actor_id=actor.actor_id, kind="tool",
+                                    detail="Write", activity="typing"))
+        assert actor.activity == "typing"
+
+        for _ in range(120):
+            sim.tick(1 / 12)
+        assert actor.activity == "idle"
+
+    def test_an_idle_office_reports_no_activities(self, sim):
+        for _ in range(200):
+            sim.tick(1 / 12)
+        assert all(a.activity == "idle" for a in sim.floor.actors.values())
+
+
+class TestFeed:
+    def test_the_feed_starts_empty(self, sim):
+        assert list(sim.feed) == []
+
+    def test_every_line_comes_from_an_applied_event(self, sim):
+        actor = next(iter(sim.floor.actors.values()))
+        sim._apply(events_mod.Event(actor_id=actor.actor_id, kind="shell",
+                                    detail="pytest -q", activity="testing", wing="QA"))
+        (item,) = list(sim.feed)
+        assert item.actor == actor.name
+        assert item.detail == "pytest -q"
+        assert item.label == "running checks"
+
+    def test_the_feed_is_bounded(self, sim):
+        from ajax_hq.game.sim import FEED_LENGTH
+
+        actor = next(iter(sim.floor.actors.values()))
+        for index in range(FEED_LENGTH * 3):
+            sim._apply(events_mod.Event(actor_id=actor.actor_id, kind="tool",
+                                        detail=f"call {index}", activity="typing"))
+        assert len(sim.feed) == FEED_LENGTH
+
+    def test_a_missing_timestamp_does_not_break_the_clock(self, sim):
+        actor = next(iter(sim.floor.actors.values()))
+        sim._apply(events_mod.Event(actor_id=actor.actor_id, kind="tool", detail="x"))
+        assert list(sim.feed)[0].clock == "—"
+
+    def test_the_feed_reaches_both_renderers(self, sim):
+        actor = next(iter(sim.floor.actors.values()))
+        sim._apply(events_mod.Event(actor_id=actor.actor_id, kind="shell",
+                                    detail="git push origin main", activity="shipping"))
+
+        payload = state_payload(sim)
+        assert payload["feed"][0]["detail"] == "git push origin main"
+
+        buffer = StringIO()
+        Console(file=buffer, width=120).print(render_frame(sim))
+        assert "git push origin main" in buffer.getvalue()
+
+    def test_the_panel_says_where_the_lines_come_from(self, sim):
+        buffer = StringIO()
+        Console(file=buffer, width=120).print(render_frame(sim))
+        assert "every line is a record on disk" in buffer.getvalue()
+
+
 class TestTail:
     """Following a file that is still being written to."""
 

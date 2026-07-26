@@ -20,6 +20,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from typing import Any
 
+from ajax_hq.game.events import ACTIVITY_LABEL
 from ajax_hq.game.sim import Simulation
 from ajax_hq.game.tui import STATE_LABEL
 from ajax_hq.game.world import Tile
@@ -63,6 +64,18 @@ def state_payload(sim: Simulation) -> dict[str, Any]:
         "errands": sim.stats.errands,
         "remaining": max(0, len(sim.pending) - sim.replay_index) if not sim.live else 0,
         "last_event": sim.stats.last_event,
+        # Newest first: the feed is read from the top.
+        "feed": [
+            {
+                "actor": item.actor,
+                "activity": item.activity,
+                "label": item.label,
+                "detail": item.detail,
+                "wing": item.wing,
+                "clock": item.clock,
+            }
+            for item in reversed(sim.feed)
+        ],
         "actors": [
             {
                 "id": actor.actor_id,
@@ -81,6 +94,8 @@ def state_payload(sim: Simulation) -> dict[str, Any]:
                 "at_desk": actor.at_desk,
                 "state": actor.state.value,
                 "state_label": STATE_LABEL[actor.state],
+                "activity": actor.activity,
+                "activity_label": ACTIVITY_LABEL.get(actor.activity, actor.activity),
                 "real": actor.state.is_real_activity,
                 "principal": actor.principal,
                 "walked_in": actor.walked_in,

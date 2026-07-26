@@ -12,14 +12,19 @@ wing. Everything else is a consequence of a record on disk.
 
 from __future__ import annotations
 
+from collections import deque
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
 
 from ajax_hq.game.actors import BUSY_SECONDS, Actor, ActorState, Floor
-from ajax_hq.game.events import Event, TranscriptTail, replay
+from ajax_hq.game.events import ACTIVITY_LABEL, IDLE, Event, TranscriptTail, replay
 from ajax_hq.game.world import World
 from ajax_hq.model import Snapshot
+
+# How many recent events the activity feed keeps. Long enough to see a burst of
+# work, short enough that the panel never becomes a log viewer.
+FEED_LENGTH = 14
 
 
 @dataclass
@@ -34,11 +39,31 @@ class Ticker:
     started_at: float = 0.0
 
 
+@dataclass(frozen=True)
+class FeedItem:
+    """One line of the activity feed. Every line is a record that existed."""
+
+    actor: str
+    activity: str
+    detail: str
+    wing: str
+    at: datetime | None
+
+    @property
+    def label(self) -> str:
+        return ACTIVITY_LABEL.get(self.activity, self.activity)
+
+    @property
+    def clock(self) -> str:
+        return self.at.strftime("%H:%M:%S") if self.at else "—"
+
+
 @dataclass
 class Simulation:
     world: World
     floor: Floor
     live: bool = True
+    feed: deque[FeedItem] = field(default_factory=lambda: deque(maxlen=FEED_LENGTH))
     stats: Ticker = field(default_factory=Ticker)
     tail: TranscriptTail | None = None
     pending: list[Event] = field(default_factory=list)
@@ -96,10 +121,20 @@ class Simulation:
 
         actor.events_seen += 1
         actor.last_detail = event.detail
+        actor.activity = event.activity
         actor.busy_for = BUSY_SECONDS
         self.stats.events_applied += 1
         self.stats.last_event = f"{actor.name}: {event.detail}"
         self.stats.last_event_at = event.at
+        self.feed.append(
+            FeedItem(
+                actor=actor.name,
+                activity=event.activity,
+                detail=event.detail,
+                wing=event.wing or actor.home_wing,
+                at=event.at,
+            )
+        )
 
         if event.is_errand and event.wing and event.wing != actor.home_wing:
             target = self._errand_target(actor, event.wing)
@@ -133,6 +168,10 @@ class Simulation:
         for actor in self.floor.actors.values():
             if actor.busy_for > 0:
                 actor.busy_for = max(0.0, actor.busy_for - dt)
+                if actor.busy_for == 0:
+                    # The record that justified the activity is no longer recent,
+                    # so the activity stops. It is not replaced with a guess.
+                    actor.activity = IDLE
 
     def _move(self, dt: float) -> None:
         for actor in self.floor.actors.values():

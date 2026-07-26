@@ -17,6 +17,7 @@ from rich.table import Table
 from rich.text import Text
 
 from ajax_hq.game.actors import Actor, ActorState
+from ajax_hq.game.events import ACTIVITY_LABEL
 from ajax_hq.game.sim import Simulation
 from ajax_hq.game.world import Tile, World
 
@@ -130,9 +131,44 @@ def render_roster(sim: Simulation) -> Table:
             Text(_initial(actor, index), style=f"bold {_actor_colour(actor)}"),
             Text(actor.name[:26], style="bold" if actor.principal else ""),
             actor.home_wing,
-            Text(STATE_LABEL[actor.state], style=colour),
+            # While an actor is genuinely busy, its activity is the more
+            # informative label; otherwise its state is all there is to say.
+            Text(
+                ACTIVITY_LABEL.get(actor.activity, actor.activity)
+                if actor.state.is_real_activity and actor.activity != "idle"
+                else STATE_LABEL[actor.state],
+                style=colour,
+            ),
             str(actor.events_seen),
             Text(actor.last_detail[:34] or "—", style=FAINT),
+        )
+    return table
+
+
+ACTIVITY_COLOUR = {
+    "typing": GOLD, "reading": "cyan", "testing": "green",
+    "shipping": "magenta", "talking": "yellow3", "reporting": "blue",
+    "working": DIM, "idle": FAINT,
+}
+
+
+def render_feed(sim: Simulation, rows: int = 6) -> Table:
+    """The last few real events. Empty is a valid, meaningful state."""
+    table = Table(box=None, padding=(0, 1), expand=False, show_header=False)
+    for _ in range(3):
+        table.add_column(overflow="ellipsis", no_wrap=True)
+
+    items = list(reversed(sim.feed))[:rows]
+    if not items:
+        table.add_row("", "", Text("Nothing yet — the feed fills as records arrive.",
+                                   style=FAINT))
+        return table
+
+    for item in items:
+        table.add_row(
+            Text(item.clock, style=FAINT),
+            Text(item.label, style=ACTIVITY_COLOUR.get(item.activity, DIM)),
+            Text(f"{item.actor[:22]} · {item.detail[:44]}", style=DIM),
         )
     return table
 
@@ -171,6 +207,8 @@ def render_frame(sim: Simulation) -> Group:
         render_map(sim),
         Text(),
         Panel(render_roster(sim), border_style="grey23", padding=(0, 1), expand=False),
+        Panel(render_feed(sim), title="[dim]activity — every line is a record on disk[/]",
+              title_align="left", border_style="grey23", padding=(0, 1), expand=False),
         footer,
     )
 

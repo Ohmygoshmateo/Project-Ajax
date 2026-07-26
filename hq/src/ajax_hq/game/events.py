@@ -35,6 +35,46 @@ from ajax_hq.sources.transcripts import parse_timestamp
 DISPATCH_TOOLS = {"Agent", "Task", "AskUserQuestion", "ExitPlanMode"}
 
 
+# What an actor is visibly doing. Each value is produced by a specific kind of
+# record, never inferred from how long it has been since the last one — an actor
+# with no recent record is idle, and says so, rather than being given something
+# plausible to look busy with.
+TYPING = "typing"        # Write / Edit — it is changing a file
+READING = "reading"      # Read / Grep / WebSearch — it is looking something up
+TESTING = "testing"      # a verification command
+SHIPPING = "shipping"    # a commit or push
+TALKING = "talking"      # dispatching an agent, or asking a question
+REPORTING = "reporting"  # emitting text — writing its answer
+WORKING = "working"      # a tool that maps to none of the above
+IDLE = "idle"
+
+ACTIVITY_BY_TOOL = {
+    "Write": TYPING, "Edit": TYPING, "MultiEdit": TYPING, "NotebookEdit": TYPING,
+    "Read": READING, "Grep": READING, "Glob": READING, "NotebookRead": READING,
+    "WebSearch": READING, "WebFetch": READING, "ToolSearch": READING,
+    "Agent": TALKING, "Task": TALKING, "AskUserQuestion": TALKING,
+    "ExitPlanMode": TALKING,
+}
+
+ACTIVITY_LABEL = {
+    TYPING: "editing", READING: "researching", TESTING: "running checks",
+    SHIPPING: "shipping", TALKING: "in conversation", REPORTING: "writing up",
+    WORKING: "working", IDLE: "idle",
+}
+
+
+def activity_for(name: str, command: str | None = None) -> str:
+    """What a tool call looks like on the floor."""
+    if name == "Bash" and command:
+        verify, ship = count_commands([command])
+        if ship:
+            return SHIPPING
+        if verify:
+            return TESTING
+        return WORKING
+    return ACTIVITY_BY_TOOL.get(name, WORKING)
+
+
 @dataclass(frozen=True)
 class Event:
     """One thing that actually happened, attributable to one actor."""
@@ -44,6 +84,7 @@ class Event:
     detail: str
     at: datetime | None = None
     wing: str | None = None  # where it should send the actor, if anywhere
+    activity: str = WORKING
 
     @property
     def is_errand(self) -> bool:
@@ -110,13 +151,15 @@ def events_from_record(record: dict, actor_id: str) -> list[Event]:
                     detail=_flat(command) if command else name,
                     at=at,
                     wing=wing_for_tool(name, command),
+                    activity=activity_for(name, command),
                 )
             )
         elif kind == "text":
             text = block.get("text")
             if isinstance(text, str) and text.strip():
                 events.append(
-                    Event(actor_id=actor_id, kind="text", detail=_flat(text), at=at)
+                    Event(actor_id=actor_id, kind="text", detail=_flat(text), at=at,
+                          activity=REPORTING)
                 )
 
     return events

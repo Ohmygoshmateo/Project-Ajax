@@ -15,7 +15,6 @@ from ajax_hq.model import Snapshot, SourceRef
 from ajax_hq.sources import projects as projects_mod
 from ajax_hq.sources import sessions as sessions_mod
 from ajax_hq.sources import transcripts, vcs
-from ajax_hq.sources.modules import ajax_trading
 from ajax_hq.timeutil import aware, now
 
 
@@ -101,17 +100,12 @@ def collect(
     for built in snapshot.files:
         built.project = projects_mod.project_for_path(built.path, snapshot.projects)
 
-    # --- optional project module: Ajax trading ------------------------------
-    trading_summary: dict[str, str] = {}
-    trading_last: datetime | None = None
-    for repo in repos:
-        if ajax_trading.available(repo):
-            try:
-                trading_summary = ajax_trading.summarize(repo)
-                trading_last = ajax_trading.last_activity(repo)
-            except Exception as exc:  # noqa: BLE001
-                snapshot.warnings.append(f"trading module unreadable: {exc}")
-            break
+    # --- optional project modules -------------------------------------------
+    # A project can supply its own figures for the Asset Management division by
+    # adding a module under sources/modules/. None is installed, so the division
+    # renders empty and says why.
+    module_summary: dict[str, str] = {}
+    module_last: datetime | None = None
 
     # --- divisions ----------------------------------------------------------
     snapshot.divisions = divisions_mod.build_all(
@@ -121,8 +115,8 @@ def collect(
         commits=snapshot.commits,
         projects=snapshot.projects,
         plans=snapshot.plans,
-        trading_summary=trading_summary,
-        trading_last_active=trading_last,
+        module_summary=module_summary,
+        module_last_active=module_last,
     )
 
     # --- provenance ---------------------------------------------------------
