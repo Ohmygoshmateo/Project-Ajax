@@ -38,10 +38,10 @@ elsewhere — see :func:`build_cues`.
 from __future__ import annotations
 
 import tempfile
+from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 from functools import lru_cache
 from pathlib import Path
-from typing import Mapping, Sequence
 
 from PIL import Image, ImageDraw, ImageFont
 
@@ -444,7 +444,7 @@ def _ground(size: tuple[int, int], top: RGB, bottom: RGB) -> Image.Image:
     pixels = column.load()
     for y in range(height):
         t = y / max(height - 1, 1)
-        pixels[0, y] = tuple(round(a + (b - a) * t) for a, b in zip(top, bottom))
+        pixels[0, y] = tuple(round(a + (b - a) * t) for a, b in zip(top, bottom, strict=True))
     return column.resize(size, Image.Resampling.BILINEAR)
 
 
@@ -869,8 +869,9 @@ def render_cues(
             # keeps it visible and the drift is a fraction of a frame.
             entries.append(f"file '{frame_path.name}'\nduration {max(cue.duration, minimum):.3f}")
 
-        # The concat demuxer ignores the final entry's duration, so the last
-        # frame is listed twice; -t then trims the hold to the exact length.
+        # The last frame is listed a second time because the concat demuxer gives
+        # the final entry no onward timestamp to hold against, and without it the
+        # closing beat lasts a single frame.
         listing = work / "cues.txt"
         listing.write_text("\n".join(entries) + f"\nfile 'cue{len(cues) - 1:04d}.png'\n")
 
@@ -882,8 +883,14 @@ def render_cues(
                 "-i", f"anullsrc=channel_layout={CHANNEL_LAYOUT}:sample_rate={SAMPLE_RATE}",
                 "-map", "0:v", "-map", "1:a",
                 "-t", f"{scheduled:.3f}",
-                "-r", str(fps),
-                "-c:v", "libx264", "-preset", "veryfast", "-crf", "23",
+                # The fps *filter*, not -r. Output-rate conversion decides how long
+                # to hold a frame from the packet's own duration, which for a still
+                # is one frame; the filter holds it until the next timestamp, which
+                # is the only reading that reproduces the schedule. Measured: -r
+                # loses about 2% of the runtime across a twenty-beat episode.
+                "-vf", f"fps={fps}",
+                "-c:v", "libx264", "-preset", "veryfast", "-tune", "stillimage",
+                "-crf", "23", "-g", str(fps * 10),
                 "-pix_fmt", "yuv420p",  # yuv420p or half the world cannot play it
                 "-c:a", "aac", "-b:a", "96k",
                 "-movflags", "+faststart",

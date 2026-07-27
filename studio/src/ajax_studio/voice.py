@@ -48,10 +48,11 @@ from __future__ import annotations
 
 import re
 import subprocess
+from collections.abc import Callable, Sequence
 from dataclasses import dataclass
 from functools import lru_cache
 from pathlib import Path
-from typing import Protocol, Sequence, runtime_checkable
+from typing import Protocol, runtime_checkable
 
 from imageio_ffmpeg import get_ffmpeg_exe
 
@@ -202,7 +203,9 @@ class SilentVoice:
         return seconds
 
 
-BACKENDS: dict[str, type[SilentVoice]] = {"silent": SilentVoice}
+# The registry a real backend joins. Deliberately one entry long: everything the
+# pipeline can actually do today is in it.
+BACKENDS: dict[str, Callable[[], VoiceBackend]] = {"silent": SilentVoice}
 
 
 def get_backend(name: str) -> VoiceBackend:
