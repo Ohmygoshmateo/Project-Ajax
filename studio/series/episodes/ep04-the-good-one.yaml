@@ -1,0 +1,383 @@
+schema: 1
+number: 4
+title: The Good One
+logline: >
+  A filthy Tuesday in February and nobody comes out. Fourteen patients all
+  night, a slow cooker in the staff room, and eleven hours in which Rowan has
+  nothing to do but think about the seventeenth.
+thread: >
+  Episode 4 of the season thread — the quiet. With no shift to hide inside, Rowan gets within one word
+  of telling Marguerite, takes a phone call about a dressing gown instead, and
+  learns that she will accept absolutely any interruption that is offered to
+  her.
+cliffhanger: >
+  Marguerite sat down, which she never does, and said that nobody is watching at
+  four in the morning. She has been watching Rowan for two weeks, and she has
+  not said what she intends to do about it.
+
+beats:
+  # ---------------------------------------------------------------- cold open
+  - id: open-01
+    act: cold_open
+    clock: "03:40"
+    tension: 5
+    vo: >
+      The worst thing that happened tonight is that somebody asked me a nice
+      question.
+    shot:
+      description: Two mugs on a plastic chair in an empty corridor, steam rising.
+      motion: hold
+    caption: "03:40"
+
+  - id: open-02
+    act: cold_open
+    clock: "03:40"
+    tension: 5
+    vo: >
+      Twenty to four, corridor outside the store room, and Marguerite has sat
+      down. She does not sit down. In six years I have never once seen that
+      woman sit down, and she's put a tea by my foot, and she's waiting.
+    shot:
+      description: Mop propped against a wall, a chair pulled out at an angle, floor still wet.
+      motion: drift
+
+  - id: open-03
+    act: cold_open
+    clock: "03:40"
+    tension: 4
+    vo: >
+      Nothing went wrong tonight. That's what I need you to hold onto. Nothing
+      went wrong at all. Seven o'clock.
+    shot:
+      description: An empty corridor, lights on full, nobody in it. Hard cut to black.
+      motion: hold
+
+  # -------------------------------------------------------------------- setup
+  - id: set-01
+    act: setup
+    clock: "19:02"
+    tension: 1
+    vo: >
+      Seven o'clock, handover, and there is almost nothing on the board. Four in
+      the waiting room. Three cubicles empty. Deshawn read it out in about eleven
+      seconds and then read it again because he thought he'd missed a column.
+    shot:
+      description: Whiteboard mostly blank, two names, the rest wiped clean.
+      motion: drift
+    caption: "19:02"
+
+  - id: set-02
+    act: setup
+    clock: "19:08"
+    tension: 1
+    vo: >
+      It's the weather. It's been horizontal rain since Sunday and there's a wind
+      coming off the estuary that has taken three fence panels off the car park
+      boundary, and when it's like that people stay in. They stay in and they
+      wait and they come to us on Thursday twice as poorly, which is a whole
+      other thing, but tonight, tonight, nobody's coming out in that. The waiting
+      room television was showing its silent subtitles to four people and one of
+      them was asleep.
+    shot:
+      description: Rain running down a window in sheets, car park lights smeared.
+      motion: hold
+
+  - id: set-03
+    act: setup
+    clock: "19:20"
+    tension: 1
+    vo: >
+      Priya said the word. The Q word. Said it out loud, in the middle of the
+      department, at twenty past seven, like a person who has not been
+      professionally superstitious for six years. Three people turned round.
+      Deshawn actually put his pen down.
+    shot:
+      description: A pen set down on a desk, hand withdrawing, papers untouched.
+      motion: hold
+
+  - id: set-04
+    act: setup
+    clock: "19:21"
+    tension: 2
+    vo: >
+      And nothing happened. That's the joke. Nothing happened all night. She
+      broke the oldest rule we've got and the universe declined to respond, and
+      by two in the morning she was fully insufferable about it.
+    shot:
+      description: Wall clock, second hand moving, nothing else in frame.
+      motion: hold
+
+  - id: set-05
+    act: setup
+    clock: "19:45"
+    tension: 2
+    vo: >
+      Deshawn brought a slow cooker in. There is a slow cooker plugged in in the
+      staff room with a laminated note beside it that says "THIS IS NOT
+      COMMUNAL", and underneath, in different handwriting, "it is now". I have
+      never seen him so happy. He kept going to look at it.
+    shot:
+      description: A slow cooker on a staff room counter, taped note beside it, fluorescent light.
+      motion: push
+
+  # --------------------------------------------------------------------- rise
+  - id: rise-01
+    act: rise
+    clock: "20:30"
+    tension: 2
+    vo: >
+      Here's what a quiet night is actually for. It's for the list. Every
+      department has the list — the jobs that live permanently at position
+      fourteen and never get done because something is always on fire. The
+      drawer that doesn't shut. The label maker with no tape. A poster on the
+      back of a door advertising a wellbeing campaign that finished in 2019, and
+      a box of leaflets for it underneath, in case it comes back. Half eight, no
+      fire, so: the store room.
+    shot:
+      description: A store room door, propped, boxes stacked past the light switch.
+      motion: hold
+    caption: "20:30"
+
+  - id: rise-02
+    act: rise
+    clock: "21:10"
+    tension: 2
+    vo: >
+      Lost property. Fourteen phone chargers. One ice skate — one, a left one,
+      no partner, no explanation, no note. A set of car keys that has been in
+      that drawer since before I started nights. And a carrier bag which after
+      some discussion we established was birdseed. Nobody has ever come back for
+      the skate and at this point I'd be disappointed.
+    shot:
+      description: An open drawer of tangled cables, one white ice skate on top.
+      motion: drift
+
+  - id: rise-03
+    act: rise
+    clock: "22:00"
+    tension: 3
+    vo: >
+      Ten o'clock. Fridge temperature log. There is a column on that log for a
+      fridge that was taken out of this department in 2021. It is not here. It
+      has not been here for years. Somebody is still filling that column in every
+      single night, in pen, and I have decided I don't want to find out who,
+      because whoever it is is doing it out of love.
+    shot:
+      description: A clipboard log on a wall, columns of tiny numbers, biro on a string.
+      motion: hold
+
+  - id: rise-04
+    act: rise
+    clock: "23:15"
+    tension: 3
+    vo: >
+      Quarter past eleven and we ate. All of us. Sitting down. At a table. At the
+      same time. I cannot describe to you how strange that is. Fourteen patients
+      the whole night, all of them in beds, all of them fine, and six of us
+      sitting round a table eating a man's chilli off paper plates like a family
+      that doesn't like each other very much. Whitlock came as far as the doorway
+      with a plate. Didn't sit. Stood there for about ninety seconds and said
+      that his first night as a junior he hid in a lift for eleven minutes, and
+      then his phone went and he was gone before the end of the sentence, which
+      is the single most Whitlock thing that has ever happened.
+    shot:
+      description: Paper plates on a staff room table, six sets of hands, nobody's face.
+      motion: hold
+    caption: "23:15"
+
+  - id: rise-05
+    act: rise
+    clock: "00:40"
+    tension: 3
+    vo: >
+      Marguerite told us about the old building. There was a corridor in the old
+      building where the lino was the wrong colour for about two metres, and
+      nobody would say why, and she says she knows why and she isn't telling us
+      until she retires. She's seventy-four. She has no intention of retiring.
+      She just likes owning it.
+    shot:
+      description: Old lino, a patch of different colour, mop crossing the frame.
+      motion: drift
+
+  - id: rise-06
+    act: rise
+    clock: "01:45"
+    tension: 4
+    vo: >
+      Here's the other thing a quiet night is for, and I didn't know this before
+      Tuesday. There's a function in the system that shows you who has opened a
+      record. It's there for good reasons and it works both ways. I did not look
+      at it. I want that noted. I did not look at it, all night, right up until
+      quarter to two, when I looked at it. And I knew before I clicked that the
+      looking is a thing that gets logged as well. That's the design. That is a
+      good design, that is the system doing exactly what it says it does. I
+      clicked anyway.
+    shot:
+      description: A monitor in a dark office, screen glow on a desk, chair angled away.
+      motion: push
+
+  - id: rise-07
+    act: rise
+    clock: "02:10"
+    tension: 4
+    vo: >
+      Two people other than me, both of them for perfectly obvious reasons, both
+      of them weeks ago. That's it. That's what I found. Nothing. And I sat in
+      that chair afterwards feeling exactly as bad as I did before I looked,
+      which is when I understood that this is not actually a question about who
+      knows.
+    shot:
+      description: Office chair spinning slightly in an empty room, screen going to lock.
+      motion: hold
+
+  # ------------------------------------------------------------------- crisis
+  - id: crisis-01
+    act: crisis
+    clock: "03:40"
+    tension: 5
+    vo: >
+      Twenty to four. Corridor by the store room. Marguerite sits down with two
+      teas and she says: you've stopped talking to the girl. And I said, what
+      girl, which was pathetic, and she let me have it for free.
+    shot:
+      description: Two mugs on the floor beside a chair leg, corridor light overhead.
+      motion: hold
+    caption: "03:40"
+
+  - id: crisis-02
+    act: crisis
+    clock: "03:42"
+    tension: 5
+    vo: >
+      Then she said the thing. She said: I like nights because nobody's watching.
+      You can say anything you want at four in the morning and it doesn't go
+      anywhere, does it. And she wasn't being clever. She was being kind. She has
+      no idea. That is a woman offering me a chair and a cup of tea and eleven
+      minutes and I have never wanted anything more in my life. And she's wrong,
+      by the way. There's a system in this building that logs the fact that I
+      looked at a page. Everything is watching. She's just not one of the things
+      that is.
+    shot:
+      description: Steam off a mug, corridor stretching away empty behind it.
+      motion: drift
+
+  - id: crisis-03
+    act: crisis
+    clock: "03:44"
+    tension: 5
+    vo: >
+      And I got as far as her name. I said "Marguerite" and I got a breath in
+      behind it, I had the whole first sentence lined up and everything, twelve
+      days of it — and the phone went in the office.
+    shot:
+      description: A phone handset on a desk in an empty office, cord swinging.
+      motion: push
+
+  - id: crisis-04
+    act: crisis
+    clock: "03:45"
+    tension: 5
+    vo: >
+      It was a ward upstairs asking whether we had a patient's dressing gown.
+      That's it. That's the whole call. A dressing gown, blue, possibly with a
+      name in the collar. It took forty seconds and I made it take four minutes,
+      and when I came back out she'd finished her tea and picked her mop up and
+      the moment had been mopped away.
+    shot:
+      description: A phone handset held against a shoulder, cable taut, empty desk.
+      motion: hold
+
+  - id: crisis-05
+    act: crisis
+    clock: "03:52"
+    tension: 4
+    vo: >
+      And I was relieved. I want that in, because it's the only bit of tonight
+      that actually frightens me. A phone rang and I was relieved.
+    shot:
+      description: An empty chair in a corridor, one mug left behind on the floor.
+      motion: hold
+
+  # ------------------------------------------------------------------ fallout
+  - id: fall-01
+    act: fallout
+    clock: "07:04"
+    tension: 3
+    vo: >
+      Seven o'clock. Almost nothing to hand over. Deshawn said "nice one" and I
+      said "yeah", and he meant it, and he's right — it was a good shift, and
+      everybody got everything they needed, and two people got it faster than
+      they would have on any other night this month. That's real. I'm not going
+      to be clever about that.
+    shot:
+      description: A clean whiteboard, marker capped, grey morning light on it.
+      motion: hold
+    caption: "07:04"
+
+  - id: fall-02
+    act: fallout
+    clock: "07:10"
+    tension: 4
+    vo: >
+      Ten past. Car park. Rain's stopped. And I am more tired than I was after
+      the seventeenth, and on the seventeenth I did not sit down for eleven
+      hours. Explain that to me.
+    shot:
+      description: Windscreen, wet tarmac, three fence panels down at the boundary.
+      motion: hold
+    caption: "07:10"
+
+  - id: fall-03
+    act: fallout
+    clock: "07:12"
+    tension: 4
+    vo: >
+      At ten past three I opened the notes app on my phone and I typed the first
+      line of it. Eleven words. Just the facts, no explaining, the way you'd
+      write it if you were being brave. And I deleted it. Which is not the bad
+      part.
+    shot:
+      description: Phone screen face down on a passenger seat.
+      motion: hold
+
+  - id: fall-04
+    act: fallout
+    clock: "07:14"
+    tension: 5
+    vo: >
+      The bad part is that before I deleted it, I looked over my shoulder. In an
+      empty office. At three in the morning. To check that nobody was watching me
+      type eleven true words about my own shift. That's the bit I'd like taken
+      off the tape and I'm not going to take it off the tape.
+    shot:
+      description: Rear-view mirror, empty back seat, car park behind.
+      motion: drift
+
+  - id: fall-05
+    act: fallout
+    clock: "07:16"
+    tension: 5
+    vo: >
+      She said nobody's watching. Marguerite has been watching me for two weeks.
+      She's the one who noticed. Not the registrar with the good habits, not
+      Deshawn and his spreadsheet — the woman with the mop, who has decided to
+      raise it with me personally, at four in the morning, gently, with a tea.
+      She's given me a chance to say it to somebody who cannot possibly write it
+      down.
+    shot:
+      description: A bucket and mop parked against a wall, seen from the far end of a corridor.
+      motion: pull
+
+  - id: fall-06
+    act: fallout
+    clock: "07:18"
+    tension: 5
+    vo: >
+      And here's where I've got to, sitting in a car with the engine off at
+      twenty past seven in the morning. I need a bad shift. I want to hear myself
+      say that. I am hoping, tonight, for a department full of people having the
+      worst day of their lives, because when it's like that I don't have eleven
+      hours to think and nobody sits down next to me with two cups of tea.
+    shot:
+      description: Dawn over a wet car park, one car, brake lights coming on, then black.
+      motion: hold

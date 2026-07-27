@@ -135,6 +135,52 @@ def _file_from_input(payload: dict) -> str | None:
     return None
 
 
+def _record_build(
+    inventory: dict[str, BuiltFile],
+    *,
+    path: str,
+    tool: str,
+    stamp: datetime | None,
+    agent_id: str | None = None,
+) -> None:
+    """Fold one Write/Edit call into a file inventory.
+
+    Shared by the session and the subagent readers so a delegated build call is
+    counted exactly as one the principal made. Summing the two is safe rather
+    than double-counting: a subagent's tool calls are written only to its own
+    transcript, never echoed into the dispatching session's, so the two record
+    sets are disjoint. ``agent_id`` is what makes the inventory answer *who*
+    built a file and not merely *that* it was built.
+    """
+    entry = inventory.setdefault(path, BuiltFile(path=path))
+    if tool in WRITE_TOOLS:
+        entry.writes += 1
+    else:
+        entry.edits += 1
+    if stamp:
+        entry.first_seen = min(entry.first_seen or stamp, stamp)
+        entry.last_seen = max(entry.last_seen or stamp, stamp)
+    if agent_id and agent_id not in entry.agent_ids:
+        entry.agent_ids.append(agent_id)
+
+
+def _merge_build(inventory: dict[str, BuiltFile], entry: BuiltFile) -> None:
+    """Fold one already-tallied file into a wider inventory."""
+    existing = inventory.get(entry.path)
+    if existing is None:
+        inventory[entry.path] = entry
+        return
+    existing.writes += entry.writes
+    existing.edits += entry.edits
+    if entry.first_seen:
+        existing.first_seen = min(existing.first_seen or entry.first_seen, entry.first_seen)
+    if entry.last_seen:
+        existing.last_seen = max(existing.last_seen or entry.last_seen, entry.last_seen)
+    for agent_id in entry.agent_ids:
+        if agent_id not in existing.agent_ids:
+            existing.agent_ids.append(agent_id)
+
+
 def _usage(record: dict) -> tuple[int, int, int]:
     """Return ``(fresh_input, output, cache_read)``.
 
@@ -250,14 +296,7 @@ def parse_session_file(path: Path, health: SchemaHealth) -> SessionParse:
                 if name in WRITE_TOOLS or name in EDIT_TOOLS:
                     file_path = _file_from_input(payload)
                     if file_path:
-                        entry = parse.files.setdefault(file_path, BuiltFile(path=file_path))
-                        if name in WRITE_TOOLS:
-                            entry.writes += 1
-                        else:
-                            entry.edits += 1
-                        if stamp:
-                            entry.first_seen = min(entry.first_seen or stamp, stamp)
-                            entry.last_seen = max(entry.last_seen or stamp, stamp)
+                        _record_build(parse.files, path=file_path, tool=name, stamp=stamp)
                         if file_path not in session.files_touched:
                             session.files_touched.append(file_path)
 
@@ -286,12 +325,25 @@ def parse_session_file(path: Path, health: SchemaHealth) -> SessionParse:
     return parse
 
 
-def parse_subagent_file(path: Path, health: SchemaHealth) -> Agent:
-    """Read one subagent transcript into an Agent."""
+def parse_subagent_file(
+    path: Path, health: SchemaHealth, files: dict[str, BuiltFile] | None = None
+) -> Agent:
+    """Read one subagent transcript into an Agent.
+
+    ``files`` is an optional shared inventory, accumulated in place in the same
+    style as ``health``. Passing it is what puts a file a subagent built into
+    HQ's file list at all: a subagent writes through the principal's working
+    tree, but it records the call in *its own* transcript and nowhere else, so a
+    reader that only walks session transcripts misses the work entirely.
+    """
     agent_id = path.stem.removeprefix("agent-")
     agent = Agent(agent_id=agent_id)
     models: list[str] = []
     last_text: str | None = None
+    # Build calls are folded into the shared inventory only once the loop ends: a
+    # declared agentId can arrive on any record, and a file has to be credited to
+    # the agent's final id rather than whichever one was known at the time.
+    builds: list[tuple[str, str, datetime | None]] = []
 
     for record in iter_records(path, health):
         agent.record_count += 1
@@ -335,12 +387,19 @@ def parse_subagent_file(path: Path, health: SchemaHealth) -> Agent:
             agent.tools.add(name)
             if name in WRITE_TOOLS or name in EDIT_TOOLS:
                 file_path = _file_from_input(payload)
-                if file_path and file_path not in agent.files_touched:
-                    agent.files_touched.append(file_path)
+                if file_path:
+                    builds.append((name, file_path, stamp))
+                    if file_path not in agent.files_touched:
+                        agent.files_touched.append(file_path)
             elif name == "Bash":
                 command = payload.get("command")
                 if isinstance(command, str) and command.strip():
                     agent.commands_run.append(command.strip()[:200])
+
+    if files is not None:
+        for tool, file_path, stamp in builds:
+            _record_build(files, path=file_path, tool=tool, stamp=stamp,
+                          agent_id=agent.agent_id)
 
     agent.models = models
     # Classify the shell record now, while the commands are still in hand: they
@@ -398,22 +457,12 @@ def load(claude_home: Path | None = None) -> tuple[list[Session], list[Agent], l
                 if parse.session.client_version not in health.client_versions:
                     health.client_versions.append(parse.session.client_version)
 
-            for path_key, entry in parse.files.items():
-                existing = files.get(path_key)
-                if existing is None:
-                    files[path_key] = entry
-                    continue
-                existing.writes += entry.writes
-                existing.edits += entry.edits
-                if entry.first_seen:
-                    existing.first_seen = min(existing.first_seen or entry.first_seen,
-                                              entry.first_seen)
-                if entry.last_seen:
-                    existing.last_seen = max(existing.last_seen or entry.last_seen, entry.last_seen)
+            for entry in parse.files.values():
+                _merge_build(files, entry)
 
             for agent_path in subagent_files(project_dir, parse.session.session_id):
                 health.files_read += 1
-                agent = parse_subagent_file(agent_path, health)
+                agent = parse_subagent_file(agent_path, health, files)
                 agent.session_id = agent.session_id or parse.session.session_id
                 agents[agent.agent_id] = agent
 
@@ -422,9 +471,12 @@ def load(claude_home: Path | None = None) -> tuple[list[Session], list[Agent], l
         agent = agents.get(agent_id)
         if agent is None:
             # Dispatched but no transcript on disk — still real work, shown as
-            # running/unknown rather than dropped.
+            # running/unknown rather than dropped. Nothing it built can be
+            # attributed to it either, which the schema-health line discloses so
+            # the resulting zero is not read as "this agent touched no files".
             agent = Agent(agent_id=agent_id, status=Status.RUNNING)
             agents[agent_id] = agent
+            health.agents_without_transcript.append(agent_id)
         agent.description = agent.description or meta.get("description")
         agent.agent_type = agent.agent_type or meta.get("agent_type")
         agent.prompt = agent.prompt or meta.get("prompt")

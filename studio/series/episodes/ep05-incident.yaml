@@ -1,0 +1,384 @@
+schema: 1
+number: 5
+title: Incident
+logline: >
+  A learning bulletin about somebody else's error goes round the whole
+  organisation at twenty past seven. By half four in the morning Rowan has read
+  it three times, and she knows exactly what she has been reading it for.
+thread: >
+  Episode 5 of the season thread — the reason collapses. The bulletin names nobody — it never would
+  have named Priya — so Rowan finally has to look at whose name she actually
+  kept out of a document, and it was not the new grad's.
+cliffhanger: >
+  She works out that filing it now would put a twelve-day gap in a timeline with
+  her own four minutes at the top of it, and she is relieved. She notices being
+  relieved. She drives home anyway.
+
+beats:
+  # ---------------------------------------------------------------- cold open
+  - id: open-01
+    act: cold_open
+    clock: "04:40"
+    tension: 5
+    vo: >
+      Twenty to five and I've read the same four pages three times. It's about
+      somebody I have never met, in a building I have never been in. I was
+      looking for my name in it.
+    shot:
+      description: Phone screen in a dark staff room, document too small to read, glare.
+      motion: hold
+    caption: "04:40"
+
+  - id: open-02
+    act: cold_open
+    clock: "04:40"
+    tension: 5
+    vo: >
+      And you don't do that by accident. Nobody scans a document for their own
+      name three times without knowing what they're doing. So we'll do the whole
+      shift and get there honestly, because I've had about enough of the other
+      way.
+    shot:
+      description: Staff room chair, coat over the back, kettle light on in the corner.
+      motion: drift
+
+  - id: open-03
+    act: cold_open
+    clock: "04:40"
+    tension: 4
+    vo: >
+      It landed at twenty past seven. Start there.
+    shot:
+      description: Phone going dark on a table. Hard cut to black.
+      motion: hold
+
+  # -------------------------------------------------------------------- setup
+  - id: set-01
+    act: setup
+    clock: "19:04"
+    tension: 1
+    vo: >
+      Seven o'clock. Handover, board's middling, nineteen waiting, two boarding,
+      Deshawn in a good mood because his spreadsheet went off at five and is now
+      somebody else's problem for approximately a fortnight.
+    shot:
+      description: Whiteboard half full, marker in the tray, board pen tied on with string.
+      motion: drift
+    caption: "19:04"
+
+  - id: set-02
+    act: setup
+    clock: "19:20"
+    tension: 1
+    vo: >
+      Twenty past seven, an email goes to everybody. Learning bulletin. Four
+      pages. Something that happened somewhere else in the organisation a few
+      months ago, written up properly and sent to all of us so it doesn't happen
+      again. It came as an attachment that will not open on a single computer in
+      this department. It opens on phones. So the way this organisation
+      distributes a safety document is: fourteen people standing in a corridor
+      holding their phones up at slightly different angles.
+    shot:
+      description: Four phones held up in a corridor, screens bright, hands only.
+      motion: hold
+
+  - id: set-03
+    act: setup
+    clock: "20:15"
+    tension: 2
+    vo: >
+      And by twenty past eight the whole department is doing forensics. Which
+      ward. Which month. Somebody said it was obviously the tower because of the
+      phrase "a second area". Somebody else said no, that's the annexe. And I
+      want to be fair to us here, because nobody in that conversation was being
+      unkind about the patient. Not one person. We're just physically incapable
+      of not working out where a thing happened.
+    shot:
+      description: A corridor noticeboard, overlapping laminated notices, curling corners.
+      motion: drift
+
+  - id: set-04
+    act: setup
+    clock: "20:40"
+    tension: 2
+    vo: >
+      Deshawn read it once, put his phone in his pocket, said "right", and went
+      and did the fridge log. He didn't guess which ward. He hasn't guessed all
+      night. That is the loudest anybody has been about this document and he did
+      it without saying a word.
+    shot:
+      description: A clipboard being lifted off a wall hook, biro on a string swinging.
+      motion: hold
+
+  - id: set-05
+    act: setup
+    clock: "21:02"
+    tension: 2
+    vo: >
+      Priya read it twice. Then she came and found me and asked whether the
+      person who made the mistake gets told that it's gone out to everybody. And
+      I said yes, of course. And she said, do they write it themselves? And I
+      said sometimes. And she said "that's brave" and then a buzzer went and she
+      was off down the corridor at that run of hers, and I stood in a store room
+      for a bit.
+    shot:
+      description: Store room shelves, boxes squared off, a hand resting flat on one.
+      motion: hold
+
+  # --------------------------------------------------------------------- rise
+  - id: rise-01
+    act: rise
+    clock: "21:50"
+    tension: 2
+    vo: >
+      The prose in these things deserves study. Page two: "Communication between
+      the two areas was suboptimal." Suboptimal. Somebody was handed the actual
+      sentence — which will have been four people shouting in a corridor at half
+      four in the morning — and they turned it into "suboptimal", and then
+      somebody else approved that, and I would like to buy them both a drink and
+      then ask them some questions.
+    shot:
+      description: Phone screen close, a paragraph of blurred text, one word almost legible.
+      motion: push
+    caption: "21:50"
+
+  - id: rise-02
+    act: rise
+    clock: "22:30"
+    tension: 2
+    vo: >
+      There's a training module attached, obviously. Twenty minutes. It has a
+      quiz at the end with four questions on it, and all four questions are the
+      same question with the words in a different order, and if you get one wrong
+      it makes you watch a video about a fictional nurse called Sam who has never
+      had a bad night in her life. I have done that module three times in four
+      years. I could do it in my sleep and on at least one occasion I have.
+    shot:
+      description: A desktop monitor with a progress bar, mouse cursor idle, dark office.
+      motion: hold
+
+  - id: rise-03
+    act: rise
+    clock: "23:40"
+    tension: 3
+    vo: >
+      Twenty to twelve, I put a chart back in the wrong slot. That's it. That's
+      the whole incident. Wrong slot, one along, noticed it myself about forty
+      seconds later, moved it, no consequence of any kind to anybody. And I stood
+      there with my hand on the rack and I felt the entire weight of tonight's
+      four pages come down on me over a piece of card in the wrong gap, because it
+      is the same shape. It is exactly the same shape, four sizes down.
+    shot:
+      description: A rack of chart slots, one chart pulled out an inch, fingers on the edge.
+      motion: hold
+
+  - id: rise-04
+    act: rise
+    clock: "00:55"
+    tension: 3
+    vo: >
+      Whitlock, on his way past, not even stopping, holding a coffee he'd got
+      from the machine that only does one temperature: he said the reason that
+      report's any good is that the person who made the mistake is the one who
+      wrote it. That's what makes it useful. And then he was gone through the
+      double doors. He wasn't making a point at me. He hasn't got a point. He was
+      just saying a true thing on his way somewhere else, and it went in about
+      four inches.
+    shot:
+      description: Double doors swinging shut, a coffee cup on a ledge, corridor beyond.
+      motion: pull
+    caption: "00:55"
+
+  - id: rise-05
+    act: rise
+    clock: "02:20"
+    tension: 3
+    vo: >
+      Page three has a timeline. They always have a timeline. Time of the event,
+      time it was noticed, time it was escalated, time it was reported. And this
+      one says: reported at ten to seven the same morning. Same shift. That
+      person walked off a night shift, sat down somewhere with the worst four
+      hours of their career still on them, and typed it up before they went home.
+    shot:
+      description: A phone lying on a windowsill, dawn not yet, corridor glass reflection.
+      motion: hold
+
+  - id: rise-06
+    act: rise
+    clock: "03:30"
+    tension: 4
+    vo: >
+      So at half three I went looking for the rule. How long you've got. And
+      there isn't one. There's no clock on it, no door that closes, nothing with
+      teeth. What there is instead is a shape that everybody who reads these
+      documents recognises without being taught it. Reported that shift. Reported
+      the next shift. Or reported when somebody asked.
+    shot:
+      description: An intranet page on a monitor, headings only, body text out of focus.
+      motion: drift
+
+  - id: rise-07
+    act: rise
+    clock: "03:50"
+    tension: 4
+    vo: >
+      Twelve days is not on that list. There's a fourth category and it isn't in
+      any document anywhere, and it doesn't need to be, because it has a name
+      when people say it out loud in a corridor.
+    shot:
+      description: An empty corridor at its darkest, one strip light out.
+      motion: hold
+
+  # ------------------------------------------------------------------- crisis
+  - id: crisis-01
+    act: crisis
+    clock: "04:40"
+    tension: 5
+    vo: >
+      Twenty to five. Staff room. Third read. And I finally clocked what I was
+      actually doing with my thumb, which was going down every page looking for a
+      name.
+    shot:
+      description: Staff room table, phone, cold tea, chair pushed back at an angle.
+      motion: hold
+    caption: "04:40"
+
+  - id: crisis-02
+    act: crisis
+    clock: "04:42"
+    tension: 5
+    vo: >
+      There are no names in it. Not one, anywhere, in four pages. Not the person
+      who made the error. Not the person who found it. Not the ward, not the
+      month, not the grade, not the shift pattern. It is anonymous all the way
+      through, on purpose, because the entire machine only works if people tell
+      you things, and people do not tell you things if the reward is their name
+      in an email to two thousand colleagues.
+    shot:
+      description: Phone screen, page after page scrolling, all text deliberately soft.
+      motion: drift
+
+  - id: crisis-03
+    act: crisis
+    clock: "04:46"
+    tension: 5
+    vo: >
+      Which means the thing I was keeping Priya's name out of was never going to
+      have Priya's name in it. It was never on the table. I sat in a car park
+      twelve days ago and made a decision to protect somebody from a document
+      that does not do the thing I was protecting her from.
+    shot:
+      description: Staff room strip light, one tube humming, notice board out of focus.
+      motion: hold
+
+  - id: crisis-04
+    act: crisis
+    clock: "04:51"
+    tension: 5
+    vo: >
+      So what was it for. That's the question I have been very carefully not
+      putting into a sentence for twelve days, and here it is at ten to five in a
+      staff room. If I'd filed it on the eighteenth, page three would have had a
+      timeline on it. Event at seven minutes past two. Noticed at eleven minutes
+      past. And I was in the room, with the chart in my hand, for all four of
+      those minutes.
+    shot:
+      description: A wall clock in a staff room, second hand, cheap plastic frame.
+      motion: push
+
+  - id: crisis-05
+    act: crisis
+    clock: "04:54"
+    tension: 5
+    vo: >
+      Priya's name was never in that document. Mine was. Second line of the
+      timeline, no name attached, and every single person on this unit who read
+      it would have known inside a second who the nurse in the room was, because
+      the board says so, because the board always says so.
+    shot:
+      description: The electronic board, rows of coloured blocks, no legible text.
+      motion: hold
+
+  - id: crisis-06
+    act: crisis
+    clock: "04:58"
+    tension: 4
+    vo: >
+      Twelve days. If I filed it this morning that timeline gets one more line at
+      the bottom and everyone can do the subtraction. So I'm not going to. And I
+      felt better when I worked that out. Write that down.
+    shot:
+      description: A hand flat on a table, phone face down beside it.
+      motion: hold
+
+  # ------------------------------------------------------------------ fallout
+  - id: fall-01
+    act: fallout
+    clock: "07:06"
+    tension: 3
+    vo: >
+      Seven o'clock. Handover. Somebody on days said had we all seen the
+      bulletin, and four people said yes, and one person guessed the annexe
+      again, and Deshawn looked at the board and said nothing at all, and it was
+      over. Four pages, one night, done. Next month there'll be another one.
+    shot:
+      description: Whiteboard, day names going up in fresh marker over last night's.
+      motion: hold
+    caption: "07:06"
+
+  - id: fall-02
+    act: fallout
+    clock: "07:11"
+    tension: 4
+    vo: >
+      Ten past. Car park. And what I keep going back to is that somebody wrote
+      that. Somebody had the worst four hours of their working life and then sat
+      down at ten to seven in the morning, still in it, and typed it out in order
+      with the times on it, knowing it would go to everybody they have ever
+      worked with. That is the bravest thing I have read all year and I read it
+      four times looking for myself.
+    shot:
+      description: Windscreen, hospital block behind, lights going off floor by floor.
+      motion: hold
+    caption: "07:11"
+
+  - id: fall-03
+    act: fallout
+    clock: "07:14"
+    tension: 4
+    vo: >
+      For twelve days this has been a decision I was still in the middle of
+      making. That's how I've had it filed. Ongoing. Under review. And at ten to
+      five this morning it stopped being a decision and turned into a thing I
+      did, and the difference is that you can still make a decision.
+    shot:
+      description: Hands on a steering wheel, engine off, sky going pale at the edges.
+      motion: hold
+
+  - id: fall-04
+    act: fallout
+    clock: "07:16"
+    tension: 5
+    vo: >
+      And there's a sentence I should say to Priya. Not the report — the
+      sentence. She thinks somebody carried her on the seventeenth. She has been
+      thanking me with her whole body for twelve days, checking every chart
+      twice, being careful at me, and she has got the entire thing the wrong way
+      round and I have let her.
+    shot:
+      description: Two charts on a counter, one squared off, one an inch out of line.
+      motion: drift
+
+  - id: fall-05
+    act: fallout
+    clock: "07:18"
+    tension: 5
+    vo: >
+      I'm on with her Thursday. She's going to be pleased to see me. She's
+      pleased to see me every single time, and I have started dreading it, and I
+      would like to be the sort of person who could hear that sentence and do
+      something about it. Right. That's the shift. Nothing happened tonight
+      either.
+    shot:
+      description: Car park barrier lifting, dawn behind it, then black.
+      motion: pull

@@ -41,11 +41,11 @@ def _tool_use(name: str, payload: dict, tool_id: str) -> dict:
     return {"type": "tool_use", "name": name, "input": payload, "id": tool_id}
 
 
-def _tool_result(ts: str, tool_use_id: str, text: str) -> dict:
+def _tool_result(ts: str, tool_use_id: str, text: str, session: str = SESSION_ID) -> dict:
     return {
         "type": "user",
         "timestamp": ts,
-        "sessionId": SESSION_ID,
+        "sessionId": session,
         "message": {"content": [
             {"type": "tool_result", "tool_use_id": tool_use_id,
              "content": [{"type": "text", "text": text}]}
@@ -151,6 +151,78 @@ def claude_home(tmp_path: Path) -> Path:
     }))
 
     (home / "plans" / "demo-plan.md").write_text("# Demo plan\n\nBuild the thing.\n")
+    return home
+
+
+SHARED_SESSION_ID = "77777777-8888-9999-aaaa-bbbbbbbbbbbb"
+BUILDER = "eeee5555ffff6666"
+
+SHARED_FILE = "/home/user/Demo/shared.py"
+AGENT_ONLY_FILE = "/home/user/Demo/built_by_agent.py"
+
+
+@pytest.fixture
+def shared_tree_home(tmp_path: Path) -> Path:
+    """A session and one subagent building through the same working tree.
+
+    Shaped like the real records this was derived from: the subagent's Write and
+    Edit calls appear **only** in its own transcript — never echoed into the
+    dispatching session's — and one file is touched by both parties, which is the
+    case that would double-count if the two record sets were not disjoint.
+    """
+    home = tmp_path / "shared-claude"
+    project = home / "projects" / "-home-user-Demo"
+    subagents = project / SHARED_SESSION_ID / "subagents"
+    subagents.mkdir(parents=True)
+
+    def _record(ts: str, blocks: list[dict], *, agent: str | None = None) -> dict:
+        record = {
+            "type": "assistant",
+            "timestamp": ts,
+            "sessionId": SHARED_SESSION_ID,
+            "message": {"model": "claude-opus-5", "content": blocks,
+                        "usage": {"input_tokens": 10, "output_tokens": 5}},
+        }
+        if agent:
+            record["agentId"] = agent
+        return record
+
+    session_records = [
+        _record("2026-04-01T10:00:00.000Z", [
+            _tool_use("Write", {"file_path": SHARED_FILE, "content": "x"}, "s1"),
+            _tool_use("Edit", {"file_path": SHARED_FILE}, "s2"),
+        ]),
+        {
+            "type": "assistant", "timestamp": "2026-04-01T10:01:00.000Z",
+            "sessionId": SHARED_SESSION_ID,
+            "message": {"model": "claude-opus-5", "content": [
+                _tool_use("Agent", {"description": "Build the module",
+                                    "subagent_type": "general-purpose",
+                                    "prompt": "build it"}, "s3")]},
+        },
+        _tool_result("2026-04-01T10:01:05.000Z", "s3",
+                     f"Async agent launched successfully.\nagentId: {BUILDER} (internal)",
+                     session=SHARED_SESSION_ID),
+    ]
+    with (project / f"{SHARED_SESSION_ID}.jsonl").open("w") as fh:
+        for record in session_records:
+            fh.write(json.dumps(record) + "\n")
+
+    builder_records = [
+        _record("2026-04-01T10:02:00.000Z", [
+            _tool_use("Write", {"file_path": AGENT_ONLY_FILE, "content": "y"}, "g1"),
+            _tool_use("Edit", {"file_path": AGENT_ONLY_FILE}, "g2"),
+            _tool_use("Edit", {"file_path": AGENT_ONLY_FILE}, "g3"),
+        ], agent=BUILDER),
+        _record("2026-04-01T10:03:00.000Z", [
+            _tool_use("Edit", {"file_path": SHARED_FILE}, "g4"),
+            _tool_use("Bash", {"command": "pytest -q"}, "g5"),
+        ], agent=BUILDER),
+    ]
+    with (subagents / f"agent-{BUILDER}.jsonl").open("w") as fh:
+        for record in builder_records:
+            fh.write(json.dumps(record) + "\n")
+
     return home
 
 

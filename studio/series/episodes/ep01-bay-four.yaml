@@ -1,0 +1,277 @@
+schema: 1
+number: 1
+title: Bay Four
+logline: >
+  A new grad makes a medication error in the middle of a bad night. Rowan
+  catches it, fixes it, and decides not to report it — because the patient is
+  fine, and because she remembers being the new grad.
+thread: >
+  Episode 1 of the season thread: the unreported error. Everything later in the
+  season is a consequence of the last forty seconds of this episode.
+cliffhanger: >
+  Rowan closes the incident form without submitting it. She does not tell us
+  why, and she is aware that she has not.
+
+beats:
+  # ---------------------------------------------------------------- cold open
+  - id: open-01
+    act: cold_open
+    clock: "02:14"
+    tension: 5
+    vo: >
+      Okay. So the thing you have to understand about bay four is that I was
+      already in there.
+    shot:
+      description: Corridor at speed, handheld, sodium light smearing past.
+      motion: push
+    caption: "02:14"
+
+  - id: open-02
+    act: cold_open
+    clock: "02:14"
+    tension: 5
+    vo: >
+      I was standing right there. I had the chart in my hand. And I want that on
+      the record, whatever else ends up on the record, because for about eleven
+      seconds I was the only person in that room who knew.
+    shot:
+      description: A hand holding a clipboard, knuckles tight, fluorescent glare.
+      motion: hold
+
+  - id: open-03
+    act: cold_open
+    clock: "02:14"
+    tension: 4
+    vo: >
+      Anyway. Start at seven.
+    shot:
+      description: Hard cut to black.
+      motion: hold
+
+  # -------------------------------------------------------------------- setup
+  - id: set-01
+    act: setup
+    clock: "19:02"
+    tension: 1
+    vo: >
+      Seven o'clock. Handover. Deshawn's got the board and he's doing that thing
+      where he reads it out loud in the voice of a man announcing delayed trains.
+    shot:
+      description: Whiteboard with names half-erased, marker resting in the tray.
+      motion: drift
+    caption: "19:02"
+
+  - id: set-02
+    act: setup
+    clock: "19:06"
+    tension: 1
+    vo: >
+      Twenty-two in the waiting room, four boarding, one of them since Tuesday.
+      The printer's broken in the way where it works but lies about it. Standard.
+      Honestly? Good shift energy. I remember thinking that. I want you to know I
+      thought that.
+    shot:
+      description: Waiting room seen through wire-glass, rows of heads, mute TV.
+      motion: hold
+
+  - id: set-03
+    act: setup
+    clock: "19:20"
+    tension: 2
+    vo: >
+      Priya's on with me. Four months in. She is the fastest new grad I have ever
+      worked with and that is not entirely a compliment. She does everything
+      right and she does it at a run, and nobody has scared her yet.
+    shot:
+      description: Trainers moving fast on polished vinyl, motion blur.
+      motion: push
+
+  - id: set-04
+    act: setup
+    clock: "19:21"
+    tension: 2
+    vo: >
+      Six years ago somebody was writing that sentence about me.
+    shot:
+      description: A lanyard badge, photo turned away from camera.
+      motion: hold
+
+  # --------------------------------------------------------------------- rise
+  - id: rise-01
+    act: rise
+    clock: "21:40"
+    tension: 2
+    vo: >
+      Nine forty. Gentleman in three has swallowed a wedding ring. Not his.
+      He is extremely calm about this and I have decided not to ask, and I want
+      to be honest with you, that restraint is the hardest thing I do all night.
+    shot:
+      description: Cubicle curtain, half drawn, the shape of a shoe beneath it.
+      motion: hold
+    caption: "21:40"
+
+  - id: rise-02
+    act: rise
+    clock: "22:55"
+    tension: 3
+    vo: >
+      Eleven. It turns. It always turns at eleven. Two ambulances, then a third,
+      and the third one is the one that eats the department, because she's
+      eighty-six and she's confused and she is somebody's whole world and she
+      needs four of us for an hour.
+    shot:
+      description: Ambulance bay doors, blue light strobing the wet tarmac.
+      motion: pull
+
+  - id: rise-03
+    act: rise
+    clock: "23:41"
+    tension: 3
+    vo: >
+      Which means bay four gets me for ninety seconds at a time. Bay four is a
+      fifty-one-year-old woman, chest pain, probably not her heart, and probably
+      is doing a lot of work in that sentence.
+    shot:
+      description: Monitor trace, green line crawling, numbers ticking.
+      motion: drift
+    caption: "23:41"
+
+  - id: rise-04
+    act: rise
+    clock: "01:30"
+    tension: 4
+    vo: >
+      Half one. I have been on my feet for six and a half hours and I have eaten
+      a cereal bar that I found. Priya's picking up my slack in four, and she is
+      doing it well, and I am grateful, and I tell her so, and that matters later
+      so I'm saying it now.
+    shot:
+      description: Vending machine, mostly empty, one row of cereal bars.
+      motion: hold
+
+  - id: rise-05
+    act: rise
+    clock: "02:05"
+    tension: 4
+    vo: >
+      Two o'clock. She flags me. She's got the drug chart and she's got that
+      face. Not panic. Worse. The face where someone is doing arithmetic they
+      already know the answer to.
+    shot:
+      description: A drug chart, pen hovering, hand not quite steady.
+      motion: push
+
+  # ------------------------------------------------------------------- crisis
+  - id: crisis-01
+    act: crisis
+    clock: "02:14"
+    tension: 5
+    vo: >
+      And now we're back at the top. Bay four. Me in the room, chart in my hand,
+      eleven seconds where I'm the only one who knows what's already gone in.
+    shot:
+      description: Corridor at speed again, same shot as the cold open, held longer.
+      motion: push
+    caption: "02:14"
+
+  - id: crisis-02
+    act: crisis
+    clock: "02:15"
+    tension: 5
+    vo: >
+      Here's what those eleven seconds are actually for. They are not for
+      panicking. They're for deciding, in order: is she in danger, what does she
+      need in the next two minutes, and who do I need in this room. That's it.
+      That's the whole job. Everything else is admin.
+    shot:
+      description: Close on a saline line, drip forming.
+      motion: hold
+
+  - id: crisis-03
+    act: crisis
+    clock: "02:31"
+    tension: 5
+    vo: >
+      She was not in danger. She needed monitoring and one thing giving and one
+      thing stopping, and she got both inside four minutes, and by twenty past
+      three she was asleep and her numbers were boring and boring is the most
+      beautiful word in this building.
+    shot:
+      description: Monitor numbers, steady, unremarkable.
+      motion: drift
+
+  - id: crisis-04
+    act: crisis
+    clock: "02:33"
+    tension: 4
+    vo: >
+      Priya cried in the clean utility room for ninety seconds and then came out
+      and worked the rest of the shift like a professional. I want that on the
+      record too.
+    shot:
+      description: A closed door, light strip at the base, nobody in frame.
+      motion: hold
+
+  # ------------------------------------------------------------------ fallout
+  - id: fall-01
+    act: fallout
+    clock: "07:04"
+    tension: 3
+    vo: >
+      Seven o'clock. Handover the other way. Deshawn asks how it was and I say
+      "busy, nothing exciting", which is a sentence I have said maybe four
+      hundred times, and it has never once been a lie before.
+    shot:
+      description: Whiteboard again, wiped clean, morning light coming in flat.
+      motion: hold
+    caption: "07:04"
+
+  - id: fall-02
+    act: fallout
+    clock: "07:10"
+    tension: 4
+    vo: >
+      Ten past. Car park. I've got the incident form open on my phone, because
+      that's what you do, that is the entire point of the form, it is not a
+      punishment, it's how the next one gets caught by a system instead of by
+      someone who happened to be standing there.
+    shot:
+      description: Windscreen, dawn coming up grey over a car park.
+      motion: hold
+    caption: "07:10"
+
+  - id: fall-03
+    act: fallout
+    clock: "07:12"
+    tension: 4
+    vo: >
+      And I know all that. I could teach that. I have taught that.
+    shot:
+      description: Phone screen, glare, text illegible.
+      motion: hold
+
+  - id: fall-04
+    act: fallout
+    clock: "07:13"
+    tension: 5
+    vo: >
+      She's four months in. Nobody's scared her yet. And I remember exactly what
+      it was like to be the fastest new grad on the unit and to find out, at two
+      in the morning, that fast isn't the same as good.
+    shot:
+      description: Hands on a steering wheel, engine not started.
+      motion: hold
+
+  - id: fall-05
+    act: fallout
+    clock: "07:14"
+    tension: 5
+    vo: >
+      So I closed it. I'm going to say that plainly because I'd rather hear
+      myself say it than notice I didn't. I closed the form. The patient is fine.
+      Priya will never make that mistake again in her life. And I am the only
+      person who knows, and this recording, and I don't know why I'm still
+      recording.
+    shot:
+      description: Phone going dark, reflection of a tired eye, then black.
+      motion: hold

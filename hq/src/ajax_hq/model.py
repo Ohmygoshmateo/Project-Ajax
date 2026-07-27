@@ -223,10 +223,19 @@ class BuiltFile:
     edits: int = 0
     first_seen: datetime | None = None
     last_seen: datetime | None = None
+    # Subagents whose own transcript shows a build call on this path. Identifiers
+    # only, so the list is safe to archive. An empty list is a real answer: every
+    # recorded touch came from a principal session directly.
+    agent_ids: list[str] = field(default_factory=list)
 
     @property
     def touches(self) -> int:
         return self.writes + self.edits
+
+    @property
+    def delegated(self) -> bool:
+        """Was any recorded touch made by a subagent rather than the principal?"""
+        return bool(self.agent_ids)
 
 
 @dataclass
@@ -333,6 +342,10 @@ class SchemaHealth:
     warnings: list[str] = field(default_factory=list)
     # Agents whose reported output_tokens contradicts the text they emitted.
     implausible_output_tokens: list[str] = field(default_factory=list)
+    # Agents a session dispatched but which have no transcript on disk. They are
+    # the one case where per-agent file attribution genuinely cannot be derived,
+    # so they are named rather than left to read as agents that built nothing.
+    agents_without_transcript: list[str] = field(default_factory=list)
 
     @property
     def token_note(self) -> str | None:
@@ -348,6 +361,27 @@ class SchemaHealth:
             f"Reported output tokens are unusable for {len(self.implausible_output_tokens)} "
             f"subagent(s) — the field reports a placeholder value regardless of response "
             f"size. Agent effort is shown as measured text emitted instead."
+        )
+
+    @property
+    def attribution_note(self) -> str | None:
+        """Standing note on the limits of per-agent file attribution.
+
+        Attribution is sound wherever a subagent transcript exists: each one
+        records the agent's own ``Write``/``Edit`` calls with the file path in the
+        tool input, and those records are disjoint from the dispatching session's,
+        so a delegated build is credited to the agent that made it without being
+        double-counted. A dispatch with no transcript on disk is the sole
+        exception, and it is disclosed because the alternative reading — an agent
+        that touched no files — is a claim the records do not support.
+        """
+        if not self.agents_without_transcript:
+            return None
+        return (
+            f"Per-agent file attribution is unavailable for "
+            f"{len(self.agents_without_transcript)} dispatched agent(s) with no transcript on "
+            f"disk. Anything they built cannot be credited to them, so their file counts read "
+            f"zero where the honest value is unknown."
         )
 
     @property

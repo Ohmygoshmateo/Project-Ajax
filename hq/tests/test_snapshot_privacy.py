@@ -233,6 +233,33 @@ class TestMeasuredOutputSurvivesArchiving:
         for session in fresh.sessions:
             assert sorted(session.agent_ids) == expected[session.session_id]
 
+    def test_file_credit_survives_a_round_trip(self, claude_home, empty_workspace,
+                                               empty_home, tmp_path):
+        """A restored file must still know which subagent built it.
+
+        Agent ids are identifiers, not content. Without them Engineering's
+        delegated share reads as zero on every restored record, which is the same
+        false impression the live parser was fixed to remove.
+        """
+        history = tmp_path / "history"
+        original = _built(claude_home, empty_workspace)
+        expected = {f.path: sorted(f.agent_ids) for f in original.files}
+        assert any(v for v in expected.values())
+
+        snapshot_mod.write(original, history)
+        fresh = collect(claude_home=empty_home, workspace=empty_workspace)
+        snapshot_mod.merge_history(fresh, history)
+
+        for built in fresh.files:
+            assert sorted(built.agent_ids) == expected[built.path]
+
+    def test_file_credit_is_ids_not_paths_of_content(self, claude_home, empty_workspace):
+        """Only agent ids travel in the credit list."""
+        payload = snapshot_mod.to_payload(_built(claude_home, empty_workspace))
+        known = {a["id"] for a in payload["agents"]}
+        for row in payload["files"]:
+            assert set(row["agent_ids"]) <= known
+
     def test_a_size_is_not_content(self, claude_home, empty_workspace):
         """The count travels; the text it was counted from does not."""
         import json

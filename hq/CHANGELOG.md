@@ -32,6 +32,26 @@ step is reported as a merge artefact rather than shown as work undone; the net
 sums the floored steps, so a refused negative cannot re-enter the total.
 Captures are irregular and the output says so rather than implying a schedule.
 
+**Per-agent file attribution, and a file inventory that was missing work.** The
+suspicion was that subagents write through a shared tree and their `Write`/`Edit`
+calls are lost, leaving Engineering permanently unstaffed. Checked against the
+real transcripts, that was wrong in one direction and right in another. Every
+subagent build call *is* in the subagent's own transcript with a full
+`input.file_path`, and the ids are disjoint from the dispatching session's, so
+agent-level credit was already sound — six of ten agents place in Engineering on
+today's records, and "Engineering has never had staff" was a stale reading rather
+than an artefact. But the file *inventory* was assembled from session transcripts
+alone, so 15 files built entirely by subagents were invisible to HQ, including
+three of the modules shipped above. Engineering reported 88 files and 225 build
+calls against a measured 103 and 312 — it was under-reporting its own output by
+28%, and HQ held no record that `brief.py` had ever been written. `BuiltFile` now carries `agent_ids`, the
+subagent reader folds its calls into the shared inventory, and Engineering names
+the delegated share instead of reporting it as the principal's. The one genuine
+gap — an agent dispatched with no transcript on disk, whose builds cannot be
+credited to anyone — is disclosed by name rather than left to read as an agent
+that touched no files. Placement weights were left alone: an agent that verified
+more than it built still sits in QA, because that is what it did.
+
 **Session dispatch lists are archived.** Snapshots recorded which session an
 agent belonged to but not which agents a session dispatched, so lineage's
 cross-check was structurally dead for restored records. Ids only — the privacy

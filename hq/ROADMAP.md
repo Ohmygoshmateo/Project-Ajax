@@ -17,12 +17,6 @@ on this list however good it would look on a dashboard.
   running session can be followed without re-running commands.
 - **Cross-project view** — HQ currently walks one workspace root. Multiple roots,
   with per-project division figures.
-- **Per-agent file attribution** — every agent currently places in R&D or QA
-  because subagents write through a shared tree and their `Write`/`Edit` calls
-  are not being credited to them individually. Engineering has never had staff.
-  Either the attribution is recoverable from the subagent transcripts or it is
-  not; find out, and if it is not, say so on the floor rather than leaving the
-  wing quietly empty.
 
 ## Next
 

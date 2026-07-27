@@ -185,6 +185,26 @@ class TestDivisionStatus:
         qa = next(d for d in built.divisions if d.code == "QA")
         assert dict(qa.metrics)["Verification runs"] == "1"  # the fixture's `pytest -q`
 
+    def test_engineering_counts_files_only_a_subagent_built(self, claude_home, empty_workspace):
+        """The fixture's b.py exists solely in the subagent's transcript."""
+        built = collect(claude_home=claude_home, workspace=empty_workspace)
+        eng = next(d for d in built.divisions if d.code == "ENG")
+        assert dict(eng.metrics)["Files touched"] == "2"  # a.py by the session, b.py by the agent
+
+    def test_engineering_names_the_delegated_share(self, claude_home, empty_workspace):
+        """Merging delegated work in silently would report it as the principal's."""
+        built = collect(claude_home=claude_home, workspace=empty_workspace)
+        eng = next(d for d in built.divisions if d.code == "ENG")
+        assert any("built by 1 subagent(s)" in note for note in eng.notes)
+        assert any("their own transcripts" in note for note in eng.notes)
+
+    def test_engineering_claims_no_delegation_when_there_was_none(self):
+        """A session that built everything itself must not gain a phantom credit."""
+        from ajax_hq.model import BuiltFile
+
+        division = divisions_mod.engineering([], [], [BuiltFile(path="/x.py", writes=1)])
+        assert not any("subagent" in note for note in division.notes)
+
 
 class TestServerBinding:
     """The page shows full transcripts; it must never leave loopback."""

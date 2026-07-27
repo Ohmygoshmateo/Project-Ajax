@@ -153,18 +153,33 @@ def _clip(text: str, width: int) -> str:
     return text if len(text) <= width else text[: width - 1] + "…"
 
 
-def _vacancy_reason(code: str, divisions: list[Division]) -> str:
-    """Explain an empty wing using that division's real figures."""
+def _vacancy_reason(code: str, divisions: list[Division], *, unattributed: int = 0) -> str:
+    """Explain an empty wing using that division's real figures.
+
+    An empty Engineering wing is the one vacancy that could be an artefact rather
+    than a fact — it is the wing that depends on per-agent file attribution — so
+    when ``unattributed`` dispatched agents have no transcript to attribute, the
+    caveat is stated here instead of letting the empty wing read as settled.
+    """
     division = next((d for d in divisions if d.code == code), None)
     if division is None or not division.metrics:
-        return "No delegated work recorded."
+        reason = "No delegated work recorded."
+    else:
+        metrics = dict(division.metrics)
+        key = VACANCY_METRIC.get(code)
+        value = metrics.get(key) if key else None
+        if value in (None, "0", "not distinguishable"):
+            reason = "No delegated work recorded."
+        else:
+            reason = f"No delegated work — {value} {key.lower()} by the principal."
 
-    metrics = dict(division.metrics)
-    key = VACANCY_METRIC.get(code)
-    value = metrics.get(key) if key else None
-    if value in (None, "0", "not distinguishable"):
-        return "No delegated work recorded."
-    return f"No delegated work — {value} {key.lower()} by the principal."
+    if code == "ENG" and unattributed:
+        reason += (
+            f"\nCaveat: {unattributed} dispatched agent(s) have no transcript, so files they "
+            f"built cannot be attributed. This wing may be empty by measurement rather than "
+            f"in fact."
+        )
+    return reason
 
 
 def assign(snapshot: Snapshot) -> list[Wing]:
@@ -178,9 +193,11 @@ def assign(snapshot: Snapshot) -> list[Wing]:
     for agent in sorted(snapshot.agents, key=lambda a: (-a.tools.total, a.agent_id)):
         wings[_wing_for(agent)].desks.append(Desk.from_agent(agent))
 
+    unattributed = len(snapshot.schema.agents_without_transcript)
     for code, wing in wings.items():
         if not wing.occupied:
-            wing.vacancy_reason = _vacancy_reason(code, snapshot.divisions)
+            wing.vacancy_reason = _vacancy_reason(code, snapshot.divisions,
+                                                  unattributed=unattributed)
 
     return [wings[code] for code in WING_ORDER]
 
@@ -230,9 +247,17 @@ def render(snapshot: Snapshot, console: Console | None = None) -> None:
             style=FAINT,
         )
     )
+    console.print(
+        Text(
+            "  A desk's file count is that agent's own Write/Edit record, not its "
+            "session's.",
+            style=FAINT,
+        )
+    )
 
-    note = snapshot.schema.token_note
-    if note:
+    for note in (snapshot.schema.token_note, snapshot.schema.attribution_note):
+        if not note:
+            continue
         console.print()
         lines = _wrap(note, max(30, console.width - 6))
         for index, line in enumerate(lines):

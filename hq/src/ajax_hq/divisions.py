@@ -137,8 +137,18 @@ def engineering(sessions: list[Session], agents: list[Agent], files: list[BuiltF
     division.notes.append(
         "Derived from tool calls, not a filesystem diff — counts intent to change."
     )
+
+    # Delegated work is named rather than merged away. Subagents build through the
+    # principal's working tree, so without this the division would report the
+    # principal's figures as though they were the whole story.
+    delegated = [f for f in files if f.delegated]
     contributors = sum(1 for a in agents if a.files_touched)
-    if contributors:
+    if delegated:
+        division.notes.append(
+            f"{len(delegated)} of these files were built by {contributors} subagent(s), "
+            f"credited from their own transcripts; the remainder by a session directly."
+        )
+    elif contributors:
         division.notes.append(f"{contributors} subagent(s) also wrote files.")
     return division
 

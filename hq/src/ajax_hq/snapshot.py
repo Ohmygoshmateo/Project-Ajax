@@ -118,6 +118,10 @@ def to_payload(snapshot: Snapshot) -> dict[str, Any]:
                 "edits": f.edits,
                 "first_seen": _iso(f.first_seen),
                 "last_seen": _iso(f.last_seen),
+                # Ids, not content. Without these a restored file loses the one
+                # thing that says a subagent built it rather than the principal,
+                # and Engineering's delegated share would read as zero forever.
+                "agent_ids": list(f.agent_ids),
             }
             for f in snapshot.files
         ],
@@ -266,6 +270,7 @@ def merge_history(snapshot: Snapshot, directory: Path | None = None) -> int:
                     edits=int(row.get("edits") or 0),
                     first_seen=_parse(row.get("first_seen")),
                     last_seen=_parse(row.get("last_seen")),
+                    agent_ids=[a for a in (row.get("agent_ids") or []) if isinstance(a, str)],
                 )
             )
 

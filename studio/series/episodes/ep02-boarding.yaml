@@ -1,0 +1,385 @@
+schema: 1
+number: 2
+title: Boarding
+logline: >
+  Nothing moves. Eleven admitted patients are living in the department because
+  there are no beds upstairs, and one of them is a woman from eleven nights ago,
+  back for a completely unrelated reason, with the same chart.
+thread: >
+  Episode 2 of the season thread — the record. Rowan discovers that what she did in bay four is not a
+  secret she is keeping — it is a change in a document, timestamped, in her
+  name, with an empty box next to it where the reason goes.
+cliffhanger: >
+  A doctor asks Rowan a straightforward question about that night and she gives
+  him an answer that is true sentence by sentence and false as a whole. He
+  writes it down, which means there are now two documents.
+
+beats:
+  # ---------------------------------------------------------------- cold open
+  - id: open-01
+    act: cold_open
+    clock: "03:52"
+    tension: 5
+    vo: >
+      Ten to four in the morning and I'm reading a sentence I wrote eleven days
+      ago. It's a good sentence. Clear, accurate, properly timed. That's the
+      problem.
+    shot:
+      description: Monitor screen glow on a keyboard, hands still, text out of focus.
+      motion: hold
+    caption: "03:52"
+
+  - id: open-02
+    act: cold_open
+    clock: "03:52"
+    tension: 5
+    vo: >
+      Because a chart doesn't lie for you. It doesn't take your side. It just
+      sits there in the order things happened, with the times on it and the
+      names on it, and it waits for somebody to be curious.
+    shot:
+      description: A terminal on a wheeled stand, corridor dark behind it, cursor blinking.
+      motion: drift
+
+  - id: open-03
+    act: cold_open
+    clock: "03:52"
+    tension: 4
+    vo: >
+      Nobody's been curious for eleven days. Anyway. Back up. Seven o'clock, and
+      no beds.
+    shot:
+      description: Screen going to lock, reflection collapsing to black.
+      motion: hold
+
+  # -------------------------------------------------------------------- setup
+  - id: set-01
+    act: setup
+    clock: "19:04"
+    tension: 1
+    vo: >
+      Handover. Deshawn's got the board and he is not doing the voice tonight,
+      which is how you know. He just reads it. Eleven admitted, nowhere to put
+      them, thirty-one waiting to be seen, and the words "no beds trust-wide",
+      which is a sentence that means today is the same as yesterday.
+    shot:
+      description: Whiteboard, every row full, marker lid missing.
+      motion: drift
+    caption: "19:04"
+
+  - id: set-02
+    act: setup
+    clock: "19:11"
+    tension: 1
+    vo: >
+      Boarding is the word for it. Somebody chose that word. It sounds like
+      airports. What it means is that eleven people who have been admitted to
+      this hospital are, in a technical sense, living in my department, and one
+      of them has been here since Sunday. She knows the shift patterns. She
+      knows which of us takes sugar. On Tuesday she told a new porter where the
+      linen cupboard was and she was right, and I want to be clear that I find
+      that funny and I also think it's one of the saddest things I've ever seen
+      happen in a job.
+    shot:
+      description: Trolley wheels and a folded blanket in a corridor, taped floor line.
+      motion: hold
+
+  - id: set-03
+    act: setup
+    clock: "19:26"
+    tension: 2
+    vo: >
+      Corridor B became a clinical area in March. It has a name now. It has a
+      whiteboard, a laminated sign, and a spot on the electronic board with a
+      little icon of a bed. It does not have oxygen at the third space, or a
+      call bell anybody can reach from the fourth, or a door. But it's got the
+      sign. Somebody was paid to laminate that.
+    shot:
+      description: Laminated sign taped to painted brick, corridor stretching away, sodium light.
+      motion: push
+
+  - id: set-04
+    act: setup
+    clock: "19:40"
+    tension: 2
+    vo: >
+      Marguerite has to mop a corridor with eight people in it and she does it
+      like she's doing a lounge. Goes round the furniture. Says excuse me love
+      to a man who's asleep. She has been here longer than the building has had
+      that name and she cleans it like it's hers, because it is.
+    shot:
+      description: Mop head and a bucket wheel, wet floor sign, feet of a chair.
+      motion: drift
+
+  - id: set-05
+    act: setup
+    clock: "20:02"
+    tension: 2
+    vo: >
+      There's a new registrar on. First night with us. Very polite, very quiet,
+      and he reads. Actually reads. Opens the notes at the beginning and goes
+      through them in order, every single time, which is either thorough or slow
+      depending on what kind of night it is. I liked him immediately. Remember
+      that I liked him.
+    shot:
+      description: A stack of printed notes squared off on a desk, pen aligned.
+      motion: hold
+
+  # --------------------------------------------------------------------- rise
+  - id: rise-01
+    act: rise
+    clock: "21:15"
+    tension: 2
+    vo: >
+      Quarter past nine. The gentleman in corridor space three is on day four
+      and his daughter has brought a lamp in from his house, because the
+      overhead light in a corridor does not turn off, ever, because it isn't a
+      bedroom, it's a corridor. So there is a brass table lamp from somebody's
+      living room plugged into a wall socket in my department, next to the
+      suction, and it is the nicest thing in this building.
+    shot:
+      description: Warm lamplight pooling on a corridor wall beside cold strip lighting.
+      motion: hold
+    caption: "21:15"
+
+  - id: rise-02
+    act: rise
+    clock: "21:48"
+    tension: 2
+    vo: >
+      An email arrived at twenty to ten. I'd like to read you all of it. The
+      subject line is "Flow". The body of the email is: "Let's all please focus
+      on flow." That's the email. That is the entire email. Somebody typed that,
+      on purpose, on a computer, and then closed their laptop and went home to
+      their family, and I hope they slept beautifully. Somebody printed it out
+      and put it on the staff room fridge, which is as close as this department
+      gets to a comments section, and by midnight it had four things written on
+      it and one of them was quite good.
+    shot:
+      description: Phone face-up on a cluttered desk, notification bar, screen too bright.
+      motion: hold
+
+  - id: rise-03
+    act: rise
+    clock: "23:20"
+    tension: 3
+    vo: >
+      Twenty past eleven. It turns. It always turns around eleven — except
+      tonight it can't, properly, because turning requires somewhere to put
+      people, and there isn't anywhere, so instead of turning it just gets
+      denser. Four ambulances in the bay and all four crews standing in my
+      corridor with their patients, holding, because handing over needs a space
+      to hand over into. Two of those crews were still standing there at half
+      one. They are not allowed to leave and they are not able to work, and one
+      of them did the coffee run for the other three, and none of them
+      complained to me once, which somehow made it worse.
+    shot:
+      description: Ambulance bay doors half open, blue wash on wet tarmac, crews' boots.
+      motion: pull
+
+  - id: rise-04
+    act: rise
+    clock: "00:35"
+    tension: 3
+    vo: >
+      You cannot have a private conversation in a corridor. There is no version
+      of it that works. So you have it anyway, crouched down, six inches from
+      somebody's ear, saying the worst sentence of their year very quietly — and
+      the man in the next space put his headphones in and turned his face to the
+      wall to give us a room that doesn't exist. People are so much better than
+      this building deserves.
+    shot:
+      description: Two chairs pulled close in a corridor, nobody in frame, curtain on a rail.
+      motion: hold
+    caption: "00:35"
+
+  - id: rise-05
+    act: rise
+    clock: "01:20"
+    tension: 3
+    vo: >
+      Twenty past one. I'm working through the list and there's a name on it I
+      know. I want to be careful about how I say this. I did not recognise a
+      face and go cold. I read a name in a queue on a screen, and my hands
+      stopped, and I sat there for about four seconds doing nothing at all,
+      which if you know me is the tell. I don't stop. Deshawn walked past behind
+      me in that four seconds and I have thought about that more than I've
+      thought about anything else tonight.
+    shot:
+      description: Patient list on a screen, rows of redacted blocks, one row highlighted.
+      motion: push
+
+  - id: rise-06
+    act: rise
+    clock: "01:52"
+    tension: 4
+    vo: >
+      It's the woman from bay four. Eleven nights ago. And it's got nothing to
+      do with any of that — she came off a kerb outside her sister's house and
+      she is holding her arm the way people hold an arm, and she is completely
+      fine, and she was cheerful about it, and she remembered me.
+    shot:
+      description: Waiting room chairs seen low and side-on, one coat folded on a seat.
+      motion: hold
+
+  - id: rise-07
+    act: rise
+    clock: "02:04"
+    tension: 4
+    vo: >
+      She said, you were the one who kept coming in and going out again. And she
+      wasn't having a go. She meant it kindly. She said, you'll have been run
+      off your feet that night, love, I don't know how you do it. And I said
+      something. I have no idea what I said.
+    shot:
+      description: A hand resting on a trolley rail, sleeve of a cardigan, no face.
+      motion: drift
+
+  # ------------------------------------------------------------------- crisis
+  - id: crisis-01
+    act: crisis
+    clock: "03:52"
+    tension: 5
+    vo: >
+      Ten to four. Back at the top. Her arm needs a picture taken of it and the
+      registrar wants her history, and he is the kind of man who reads, so he
+      opens her record and he starts at the beginning. Which is eleven nights
+      ago. Which is my night. And I am standing behind him with a cup of tea
+      going cold in my hand, reading over his shoulder.
+    shot:
+      description: Over-shoulder framing of a monitor, text deliberately out of focus, corridor beyond.
+      motion: push
+    caption: "03:52"
+
+  - id: crisis-02
+    act: crisis
+    clock: "03:54"
+    tension: 5
+    vo: >
+      And it's all there. In order. One thing at seven minutes past two. My
+      correction at eleven minutes past. My login on the correction, because it
+      was my correction, because that's how it should be. Everything I did that
+      night is in that document and every bit of it is right.
+    shot:
+      description: Cursor moving down a page of blurred rows, timestamps just legible as shapes.
+      motion: drift
+
+  - id: crisis-03
+    act: crisis
+    clock: "03:56"
+    tension: 5
+    vo: >
+      Here's the thing I got wrong for eleven days. I thought I was keeping a
+      secret. I wasn't keeping anything. It's filed. It's timestamped and it's
+      backed up and it's searchable and I am nowhere near the only person who
+      can open it. It was never hidden. It was just unread. There is a
+      difference and I found out what it is at four in the morning, standing
+      behind a nice man with good habits.
+    shot:
+      description: Server cabinet light through a wire-glass door, green LEDs in a dark room.
+      motion: hold
+
+  - id: crisis-04
+    act: crisis
+    clock: "04:01"
+    tension: 5
+    vo: >
+      He said: was there a reaction on the seventeenth? Because there's a change
+      here at two in the morning and nothing that explains it. And I said, she
+      had a rough couple of hours, we adjusted, she settled. Sentence by
+      sentence that is all true. Put together it is not true at all, and I have
+      never done that before in my life, and it took me under two seconds.
+    shot:
+      description: Two mugs on a desk, one untouched, keyboard between them.
+      motion: hold
+
+  - id: crisis-05
+    act: crisis
+    clock: "04:03"
+    tension: 4
+    vo: >
+      He said thanks, that's helpful. And then he typed it in. Which means it
+      isn't just my document any more. There are two now.
+    shot:
+      description: Close on a keyboard, keys going down, nothing else moving.
+      motion: hold
+
+  # ------------------------------------------------------------------ fallout
+  - id: fall-01
+    act: fallout
+    clock: "07:06"
+    tension: 3
+    vo: >
+      Seven o'clock. Nine of the eleven are still with us. I hand over a
+      corridor. I stand there and say the words "space four" about a human being
+      and nobody in the room even blinks, including me, and that is its own
+      whole other recording.
+    shot:
+      description: Whiteboard at handover, rows unchanged, morning light flat and grey.
+      motion: hold
+    caption: "07:06"
+
+  - id: fall-02
+    act: fallout
+    clock: "07:11"
+    tension: 4
+    vo: >
+      Ten past. Car park. Someone's left a trolley out here again, right in the
+      middle, and I moved it, because apparently I can't not.
+    shot:
+      description: Windscreen, empty trolley parked crooked between two cars, dawn coming up.
+      motion: hold
+    caption: "07:11"
+
+  - id: fall-03
+    act: fallout
+    clock: "07:13"
+    tension: 4
+    vo: >
+      I keep telling myself the patient is fine. And she is. She's so fine that
+      she came back eleven days later about a completely unrelated arm and
+      thanked me. I have been using that woman as evidence. That's what I've
+      been doing with her. She's been walking around being my evidence and she
+      doesn't know.
+    shot:
+      description: Hands on a steering wheel, keys in the ignition, engine off.
+      motion: hold
+
+  - id: fall-04
+    act: fallout
+    clock: "07:15"
+    tension: 5
+    vo: >
+      And here's the part I actually want to say out loud, because I've been
+      circling it since four this morning. Eleven days ago I decided not to
+      write something down. That's what I thought I did. What I actually did was
+      decide not to explain something I had already written down. Those are not
+      the same and only one of them is survivable.
+    shot:
+      description: Dawn over a car park, rows of empty spaces, one car with lights on.
+      motion: drift
+
+  - id: fall-05
+    act: fallout
+    clock: "07:18"
+    tension: 5
+    vo: >
+      There's a field on that record where the reason goes. It's blank. It has
+      been blank for eleven days, sitting next to my name, and I could fill it
+      in from this car park in about four minutes. I've got the app. I know my
+      login. I know exactly how I'd word it, I've written it about nine times in
+      my head between the third floor and here.
+    shot:
+      description: Phone in a lap, screen lit, glare hiding the text entirely.
+      motion: hold
+
+  - id: fall-06
+    act: fallout
+    clock: "07:19"
+    tension: 5
+    vo: >
+      I'm going to drive home. I'm not going to pretend that's a decision I
+      haven't made.
+    shot:
+      description: Wing mirror, hospital sign out of focus behind, then black.
+      motion: pull
