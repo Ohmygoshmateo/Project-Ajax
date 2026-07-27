@@ -1,15 +1,20 @@
 name: checks
 
-# Ajax HQ is worked on daily and mostly by agents, so the suite has to be the
-# thing that says a change is sound — not a person remembering to run it. Every
-# push and every pull request gets the same two commands a developer would run.
+# Both packages are worked on daily and mostly by agents, so the suites have to
+# be the thing that says a change is sound — not a person remembering to run
+# them. Every push and every pull request gets the same commands a developer
+# would run.
+#
+# One job per package rather than one job running both: a red check should name
+# which project broke without anyone opening the log.
 on:
   push:
     branches: ["**"]
   pull_request:
 
 jobs:
-  test:
+  hq:
+    name: hq
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -34,3 +39,36 @@ jobs:
       - name: Lint
         working-directory: hq
         run: python -m ruff check src tests
+
+  studio:
+    name: studio
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install
+        # imageio-ffmpeg ships a static ffmpeg as a wheel, so the render tests
+        # need no apt step and no system codec — `pip install -e studio` is the
+        # whole setup here exactly as it is on a laptop.
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e studio
+          pip install pytest ruff
+
+      - name: Tests
+        working-directory: studio
+        run: python -m pytest tests -q
+
+      - name: Lint
+        working-directory: studio
+        run: python -m ruff check src tests
+
+      - name: Scripts validate against the bible
+        # The scripts are the product, and a boundary breach in one is a
+        # publishing risk rather than a code defect — the suite would not catch
+        # it. Exits non-zero on errors only; a short episode is a warning.
+        run: python -m ajax_studio.cli validate
